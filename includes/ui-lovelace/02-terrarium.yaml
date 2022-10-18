@@ -1,0 +1,66 @@
+title: Террариум
+icon: mdi:tortoise
+cards:
+  - type: vertical-stack
+    cards:
+    - type: horizontal-stack # горизонтальня сортировка
+      cards:
+        - type: entities  
+          entities:
+            - entity: binary_sensor.terrarium_lights
+              icon: mdi:tortoise
+              name: Террариум
+              state_color: true
+
+    - type: horizontal-stack # горизонтальня сортировка
+      cards:
+        - type: sensor
+          name: Температура
+          entity: sensor.terrarium_temp_humidity_temperature
+          graph: line
+        - type: sensor
+          name: Влажность
+          entity: sensor.terrarium_temp_humidity_humidity
+          graph: line
+  
+    - type: horizontal-stack # горизонтальня сортировка
+      cards:
+        - type: entities  
+          entities:
+            - entity: input_boolean.auto_terrarium_control
+              state_color: true
+            - entity: input_number.temp_low_on
+              icon: mdi:thermometer
+            - entity: input_number.temp_high_off
+              icon: mdi:thermometer
+            
+            - type: divider
+              style:
+                height: 1px
+                width: 80%
+                margin-left: auto
+                margin-right: auto
+                background: '#62717b'
+            - entity: light.switch_terrarium_heat  
+
+            - entity: light.switch_terrarium_uv 
+            - type: divider
+              style:
+                height: 1px
+                width: 80%
+                margin-left: auto
+                margin-right: auto
+                background: '#62717b'
+            - entity: light.switch_terrarium_display 
+
+
+  - type: custom:scheduler-card
+    title: Расписание для террариума
+    discover_existing: true
+    standard_configuration: true
+    include:
+      - light.switch_terrarium_heat
+      - light.switch_terrarium_uv
+      - light.switch_terrarium_display 
+      - input_boolean.auto_terrarium_control
+          

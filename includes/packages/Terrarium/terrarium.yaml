@@ -1,0 +1,98 @@
+terrarium_control:
+    light:
+    - platform: mqtt
+      name: switch_terrarium_heat 
+      command_topic: "TerrariumController/switch_terrarium_heat/action"
+      state_topic: "TerrariumController/switch_terrarium_heat/status"
+      payload_on: "ON"
+      payload_off: "OFF"
+      retain: false
+
+    - platform: mqtt
+      name: switch_terrarium_uv
+      command_topic: "TerrariumController/switch_terrarium_uv/action"
+      state_topic: "TerrariumController/switch_terrarium_uv/status"
+      payload_on: "ON"
+      payload_off: "OFF"
+      retain: false
+
+    - platform: mqtt
+      name: switch_terrarium_display
+      command_topic: "TerrariumController/switch_terrarium_display/action"
+      state_topic: "TerrariumController/switch_terrarium_display/status"
+      payload_on: "ON"
+      payload_off: "OFF"
+      retain: false
+
+    input_number:
+      temp_low_on:
+        name: Температура для включения обогрева
+        min: 15
+        max: 45
+        step: 1
+        
+      temp_high_off:
+        name: Температура для выключения обогрева
+        min: 25
+        max: 50
+        step: 1
+        
+
+    input_boolean:
+      auto_terrarium_control:
+        name: Автоматическое управление обогревом
+        icon: mdi:script-text-play-outline
+
+
+    template:   
+    
+      - binary_sensor:
+          - name: terrarium_lights
+            state: >
+              {{ is_state('light.switch_terrarium_heat', 'on') or is_state('light.switch_terrarium_uv', 'on') }}
+
+          - name: sensor_temp_high_on
+            state: >
+              {{ is_state('light.switch_terrarium_heat', 'off') and is_state('light.switch_terrarium_uv', 'on')
+                 and (states('sensor.terrarium_temp_humidity_temperature') | int <= (states('input_number.temp_low_on') | int))
+                 and is_state('input_boolean.auto_terrarium_control', 'on')
+              }}
+              
+          - name: sensor_temp_low_off
+            state: >
+              {{ is_state('light.switch_terrarium_heat', 'on') and is_state('light.switch_terrarium_uv', 'on')
+                 and (states('sensor.terrarium_temp_humidity_temperature') | int >= (states('input_number.temp_high_off') | int))
+                 and is_state('input_boolean.auto_terrarium_control', 'on')
+              }}
+
+
+    automation:
+
+      - id: Автоматическое управление обогревом террариума
+        alias: auto_terrarium_heat_control
+        initial_state: true
+        trigger:
+          - platform: state
+            entity_id: binary_sensor.sensor_temp_high_on
+            to: 'on'
+          - platform: state
+            entity_id: binary_sensor.sensor_temp_low_off
+            to: 'on'
+        action:
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: binary_sensor.sensor_temp_high_on
+                    state: 'on'
+                sequence:
+                  - service: light.turn_on
+                    data:
+                      entity_id: light.switch_terrarium_heat
+              - conditions:
+                  - condition: state
+                    entity_id: binary_sensor.sensor_temp_low_off
+                    state: 'on'
+                sequence:
+                  - service: light.turn_off
+                    data:
+                      entity_id: light.switch_terrarium_heat

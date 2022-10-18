@@ -1,0 +1,32 @@
+- alias: bathroom2_fan_max_on
+  id: bathroom2_fan_max_on
+  initial_state: false
+  trigger:
+   - platform: state
+     entity_id: switch.switch_bathroom_2_right
+     to: 'on'
+  action:
+   - service: switch.turn_on
+     entity_id: switch.fan_bathroom_2_l2     
+
+#- alias: bathroom2_fan_max_on
+#  id: bathroom2_fan_max_on
+#  initial_state: true
+#  trigger:
+#   - platform: state
+#     entity_id: sensor.switch_bathroom_2_action
+#     to: 'single_both'
+#  action:
+#   - service: switch.turn_on
+#     entity_id: switch.fan_bathroom_2_l2
+
+- alias: bathroom2_fan_max_off
+  id: bathroom2_fan_max_off
+  initial_state: false
+  trigger:
+   - platform: state
+     entity_id: switch.switch_bathroom_2_right
+     to: 'off'
+  action:
+   - service: switch.turn_off
+     entity_id: switch.fan_bathroom_2_l2 

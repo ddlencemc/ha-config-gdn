@@ -1,0 +1,45 @@
+title: Катина комната
+icon: mdi:bed-queen
+cards:
+  - type: vertical-stack
+    cards:
+    - type: horizontal-stack # горизонтальня сортировка
+      cards:
+        - type: entities  
+          entities:
+            - entity: binary_sensor.terrarium_lights
+              icon: mdi:tortoise
+              name: Террариум
+              state_color: true
+
+    - type: horizontal-stack # горизонтальня сортировка
+      cards:
+        - type: sensor
+          name: Температура
+          entity: sensor.terrarium_temp_humidity_temperature
+        - type: sensor
+          name: Влажность
+          entity: sensor.terrarium_temp_humidity_humidity
+  
+    - type: horizontal-stack # горизонтальня сортировка
+      cards:
+        - type: entities  
+          entities:
+            - entity: light.switch_terrarium_heat  
+            - type: divider
+              style:
+                height: 1px
+                width: 80%
+                margin-left: auto
+                margin-right: auto
+                background: '#62717b'
+            - entity: light.switch_terrarium_uv 
+            - type: divider
+              style:
+                height: 1px
+                width: 80%
+                margin-left: auto
+                margin-right: auto
+                background: '#62717b'
+            - entity: light.switch_terrarium_display 
+            

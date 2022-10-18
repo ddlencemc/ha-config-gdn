@@ -1,0 +1,126 @@
+title: Ванная
+icon: mdi:shower
+cards:
+  - type: vertical-stack
+    cards:
+    - type: markdown
+      content: >
+        **Большая ванная комната**
+    - type: horizontal-stack # горизонтальня сортировка
+      cards:
+        - type: sensor
+          name: Ванная температура
+          # graph: line
+          # unit: "°C"
+          entity: sensor.bathroom1_temp_humidity_temperature
+        - type: sensor
+          name: Ванная Влажность
+          # graph: line
+          # unit: "%"
+          #secondary_info: last-changed
+          #icon: mdi:water-percent
+          entity: sensor.bathroom1_temp_humidity_humidity
+    # - type: markdown
+    #   content: >
+    #     **Автоматическое включение вытяжки**
+    - type: horizontal-stack # горизонтальня сортировка
+      cards:
+        
+        - type: entities  
+          entities:
+            - entity: input_boolean.auto_vent_max
+              state_color: true
+            - entity: input_number.hum_high_on
+              icon: mdi:water-plus
+            - entity: input_number.hum_low_off
+              icon: mdi:water-minus
+            - entity: switch.fan_bathroom_1_l2
+              name: Вытяжка вторая скорость
+              state_color: true
+
+    - type: horizontal-stack # горизонтальня сортировка
+      cards:            
+        - type: entities  
+          entities:
+            - entity: input_boolean.auto_vent_min
+              state_color: true
+            - entity: input_select.vent_min_on_time
+            - entity: input_select.vent_min_off_time
+            - entity: timer.vent_min_on
+              state_color: true
+            - entity: timer.vent_min_off
+              state_color: true
+            - entity: switch.fan_bathroom_1_l1
+              name: Вытяжка первая скорость
+              state_color: true
+            - entity: switch.switch_bathroom_1_left
+              name: Основной свет
+              state_color: true
+              icon: mdi:lightbulb-spot
+            - entity: switch.switch_bathroom_1_right
+              name: Подсветка
+              state_color: true
+              icon: mdi:led-strip-variant
+            
+
+  - type: vertical-stack
+    cards:
+    - type: markdown
+      content: >
+        **Маленькая ванная комната**
+    - type: horizontal-stack # горизонтальня сортировка
+      cards:
+        - type: sensor
+          name: Ванная температура
+          # graph: line
+          # unit: "°C"
+          entity: sensor.bathroom2_temp_humidity_temperature
+        - type: sensor
+          name: Ванная Влажность
+          # graph: line
+          # unit: "%"
+          #secondary_info: last-changed
+          #icon: mdi:water-percent
+          entity: sensor.bathroom2_temp_humidity_humidity
+    # - type: markdown
+    #   content: >
+    #     **Автоматическое включение вытяжки**
+    - type: horizontal-stack # горизонтальня сортировка
+      cards:
+        
+        - type: entities  
+          entities:
+            - entity: input_boolean.auto_vent_max_2
+              state_color: true
+            - entity: input_number.hum_high_on_2
+              icon: mdi:water-plus
+            - entity: input_number.hum_low_off_2
+              icon: mdi:water-minus
+            - entity: switch.fan_bathroom_2_l2
+              name: Вытяжка вторая скорость
+              state_color: true
+
+    - type: horizontal-stack # горизонтальня сортировка
+      cards:            
+        - type: entities  
+          entities:
+            - entity: input_boolean.auto_vent_min_2
+              state_color: true
+            - entity: input_select.vent_min_on_time_2
+            - entity: input_select.vent_min_off_time_2
+            - entity: timer.vent_min_on_2
+              state_color: true
+            - entity: timer.vent_min_off_2
+              state_color: true
+            - entity: switch.fan_bathroom_2_l1
+              name: Вытяжка первая скорость
+              state_color: true                
+            - entity: switch.switch_bathroom_2_left
+              name: Основной свет
+              state_color: true
+              icon: mdi:lightbulb-spot
+            - entity: switch.switch_bathroom_2_right
+              name: Подсветка
+              state_color: true
+              icon: mdi:led-strip-variant
+        

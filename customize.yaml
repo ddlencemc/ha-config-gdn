@@ -1,0 +1,301 @@
+sensor.espws_outside_humidity:
+  friendly_name: Влажность на улице
+  device_class: humidity
+  unit_of_measurement: "%"
+  icon: mdi:water-percent
+
+sensor.espws_inside_temperature:
+   friendly_name: Температура дома
+   device_class: temperature
+   unit_of_measurement: "°C"
+   icon: mdi:thermometer
+
+sensor.espws_outside_dev_point:
+   friendly_name: Точка росы
+   device_class: temperature
+   unit_of_measurement: "°C"
+   icon: mdi:thermometer-low
+
+sensor.espws_outside_temperature:
+   friendly_name: Температура на улице
+   device_class: temperature
+   unit_of_measurement: "°C"
+   icon: mdi:thermometer
+
+sensor.espws_pressure:
+  entity_id: espws_pressure
+  friendly_name: Атмосферное давление
+  device_class: pressure
+  unit_of_measurement: "mmHg"
+  icon: mdi:gauge
+
+sensor.espws_rssi:
+  friendly_name: ESPWS Wi-Fi
+  device_class: signal_strength
+  unit_of_measurement: "dBm"
+  icon: mdi:wifi-arrow-left-right
+
+binary_sensor.corridor_occupancy:
+  friendly_name: Движение в коридоре
+  device_class: occupancy  
+
+#Террариум сенсоры и выключатели
+sensor.terrarium_temp_humidity_temperature:
+   friendly_name: Температура в террариуме
+   device_class: temperature
+   unit_of_measurement: "°C"
+   icon: mdi:thermometer
+
+sensor.terrarium_temp_humidity_humidity:
+  friendly_name: Влажность в террариуме
+  device_class: humidity
+  unit_of_measurement: "%"
+  icon: mdi:water-percent
+
+light.switch_terrarium_heat:
+  friendly_name: Обогрев террариума
+  device_class: light
+  icon: mdi:sun-thermometer
+
+light.switch_terrarium_uv:
+  friendly_name: Ультрафиолет террариума
+  device_class: light
+  icon: mdi:sun-wireless
+
+light.switch_terrarium_display:
+  friendly_name: Экран контроллера террариума
+  device_class: light
+  icon: mdi:cast
+
+
+#Выключатели в квартире
+light.light_kitchen_backlight:
+  friendly_name: Подсветка зоны плиты
+  device_class: light
+  icon: mdi:led-strip
+
+
+switch.switch_kitchen_bottom_light:
+  friendly_name: Подсветка пола на кухне
+  device_class: light
+  icon: mdi:led-strip
+
+
+switch.fan_kitchen_l1:
+  friendly_name: Кухня вытяжка скорость первая
+  device_class: fan
+  icon: mdi:fan-speed-1
+  state_color: true
+
+switch.fan_kitchen_l2:
+  friendly_name: Кухня вытяжка скорость вторая
+  device_class: fan
+  icon: mdi:fan-speed-2
+  state_color: true
+
+switch.fan_bathroom_1_l1:
+  friendly_name: Большая ванная вытяжка скорость первая
+  device_class: fan
+  icon: mdi:fan-speed-1
+  state_color: true
+
+switch.fan_bathroom_1_l2:
+  friendly_name: Большая ванная вытяжка скорость вторая
+  device_class: fan
+  icon: mdi:fan-speed-2
+  state_color: true
+
+switch.fan_bathroom_2_l1:
+  friendly_name: Маленька ванная вытяжка скорость первая
+  device_class: fan
+  icon: mdi:fan-speed-1
+  state_color: true
+
+switch.fan_bathroom_2_l2:
+  friendly_name: Маленька ванная вытяжка скорость вторая
+  device_class: fan
+  icon: mdi:fan-speed-2
+  state_color: true
+
+switch.switch_bathroom_1_left:
+  friendly_name: Большая ванная основной свет
+  device_class: light
+  icon: mdi:lightbulb-spot
+
+switch.switch_bathroom_1_right:
+  friendly_name: Большая ванная подсветка
+  device_class: light
+  icon: mdi:led-strip-variant
+
+switch.switch_bathroom_2_left:
+  friendly_name: Маленька ванная основной свет
+  device_class: light
+  icon: mdi:lightbulb-spot
+
+switch.switch_bathroom_2_right:
+  friendly_name: Маленька ванная подсветка
+  device_class: light
+  icon: mdi:led-strip-variant
+
+switch.switch_bedroom_light_top:
+  friendly_name: Спальня основной свет
+  device_class: light
+  icon: mdi:light-recessed
+
+switch.switch_bedroom_light_wall_left:
+  friendly_name: Спальня светильник слева
+  device_class: light
+  icon: mdi:globe-light
+
+switch.switch_bedroom_light_wall_right:
+  friendly_name: Спальня светильник справа
+  device_class: light
+  icon: mdi:globe-light
+
+
+switch.switch_corridor_ligth_top_left:
+  friendly_name: Прихожая трекер
+  device_class: light
+  icon: mdi:track-light
+
+
+switch.switch_corridor_ligth_top_right:
+  friendly_name: Прихожая светильник над дверью 
+  device_class: light
+  icon: mdi:coach-lamp
+
+light.corridor_led:
+  friendly_name: Подсветка пола
+  device_class: light
+  icon: mdi:led-strip-variant  
+
+switch.switch_kabinet_ligth_top_left:
+  friendly_name: Кабинет подсветка
+  device_class: light
+  icon: mdi:led-strip-variant
+
+switch.switch_kabinet_ligth_top_right:
+  friendly_name: Кабинет основной свет
+  device_class: light
+  icon: mdi:light-recessed
+
+switch.switch_kateroom_ligth_top_left:
+  friendly_name: Катина комната трекер слева
+  device_class: light
+  icon: mdi:track-light
+
+switch.switch_kateroom_ligth_top_right:
+  friendly_name: Катина комната трекер справа
+  device_class: light
+  icon: mdi:track-light
+
+switch.switch_living_room_ligth_chandelier_left:
+  friendly_name: Люстра над кухонной зоной
+  device_class: light
+  icon: mdi:chandelier
+
+switch.switch_living_room_ligth_chandelier_right:
+  friendly_name: Люстра над обеденным столом
+  device_class: light
+  icon: mdi:chandelier
+
+switch.switch_living_room_ligth_top_left:
+  friendly_name: Трекер над диваном
+  device_class: light
+  icon: mdi:track-light
+
+switch.switch_living_room_ligth_top_right:
+  friendly_name: Трекер над кухонной зоной
+  device_class: light
+  icon: mdi:track-light
+
+
+input_number.temp_low_on:
+  friendly_name: Температура для включения обогрева террариума
+  device_class: temperature
+  icon: mdi:thermometer
+
+input_number.temp_high_off:
+  friendly_name: Температура для выключения обогрева террариума
+  device_class: temperature
+  icon: mdi:thermometer  
+
+
+cover.rollet_bedroom:
+  friendly_name: Жалюзи в спальне
+  device_class: blind
+  icon: mdi:blinds-open  
+
+cover.rollet_kateroom:
+  friendly_name: Жалюзи у Кати
+  device_class: blind
+  icon: mdi:blinds-open  
+
+sensor.esp_energy_monitor_current:
+  friendly_name: Текущий ток (А)
+
+sensor.esp_energy_monitor_energy:
+  friendly_name: Общие показания (кВатт/час)
+
+sensor.esp_energy_monitor_frequency:
+  friendly_name: Частота сети (Hz)
+
+sensor.esp_energy_monitor_power:
+  friendly_name: Текущая мощность (Ватт)
+
+sensor.esp_energy_monitor_power_kw:
+  friendly_name: Текущая потребляемая мощность (кВатт)
+
+sensor.esp_energy_monitor_power_day:
+  friendly_name: Потребляемая мощность днем (кВатт)
+
+sensor.esp_energy_monitor_power_night:
+  friendly_name: Потребляемая мощность ночью (кВатт)
+
+sensor.esp_energy_monitor_power_factor:
+  friendly_name: Коэффицент мощности
+
+sensor.esp_energy_monitor_energy_daily_day:
+  friendly_name: Потребление за день (кВатт/ч)
+
+sensor.esp_energy_monitor_energy_daily_night:
+  friendly_name: Потребление за ночь (кВатт/ч)
+
+sensor.esp_energy_monitor_energy_daily:
+  friendly_name: Потребление за сутки (кВатт/ч)
+
+sensor.esp_energy_monitor_energy_monthly:
+  friendly_name: Потребление за месяц (кВатт/ч)
+
+sensor.esp_energy_monitor_voltage:
+  friendly_name: Напряжение сети (Вольт)
+
+sensor.esp_energy_monitor_uptime:
+  friendly_name: Вермя онлайн
+
+sensor.smart_plug_01_energy:
+  friendly_name: Посудомойка Общее потребление (кВатт/час)
+
+sensor.smart_plug_01_power:
+  friendly_name: Посудомойка Текущая нагрузка (Ватт)
+
+sensor.smart_plug_01_current:
+  friendly_name: Посудомойка Текущий ток (А)
+
+sensor.smart_plug_01_voltage:
+  friendly_name: Посудомойка Напряжение сети (Вольт)
+
+
+
+#sensor.esp_energy_monitor_energy_monthly_day
+#sensor.esp_energy_monitor_energy_monthly_night
+
+# sensor.esp_energy_monitor_esphome_version
+# sensor.esp_energy_monitor_ip
+# sensor.esp_energy_monitor_latest_scan_results
+# sensor.esp_energy_monitor_mac
+# sensor.esp_energy_monitor_ssid
+# sensor.esp_energy_monitor_uptime_s
+#sensor.esp_energy_monitor_wifi_signal
+
+#sensor.esp_kitchen_bottom_light_wifi_signal

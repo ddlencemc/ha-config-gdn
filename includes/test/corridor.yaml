@@ -1,0 +1,165 @@
+corridor_light_moving:
+
+    input_boolean:
+      auto_corridor_led:
+        name: Автоматическое управление подсветкой цоколя
+        icon: mdi:script-text-play-outline
+
+    input_select:    
+      corridor_led_time:
+        name: Время для отключения подсветки цоколя
+        options:
+          - 00:00:10
+          - 00:01:00
+          - 00:02:00
+          - 00:03:00
+          - 00:04:00
+          - 00:05:00
+          - 00:06:00
+          - 00:07:00
+          - 00:08:00
+          - 00:09:00
+          - 00:10:00
+    timer:    
+        timer_corridor_led:
+          name: Подсветка цоколя будет выключена через - 
+          duration: '00:03:00'
+          restore: true           
+
+    template:
+     
+      - binary_sensor:
+
+          - name: corridor_light
+            state: >
+              {{ is_state('binary_sensor.corridor_occupancy', 'off')  
+                 and is_state('light.corridor_led', 'on')
+              }}
+            delay_on: 00:00:05
+
+      - sensors: 
+          corridor_led_brightness:
+            friendly_name: Яркость подсветки
+            value_template: >-
+              {% if now().hour >= 21 or now().hour <= 6%}
+                10
+              {% elif now().hour >= 6 and now().hour <= 18 %}
+                0
+              {% else %}
+                100
+              {% endif %}           
+            icon_template: >-
+              {% if states('sensor.corridor_led_brightness') == 100 %}
+                mdi:brightness-7
+              {% else %}
+                mdi:brightness-4
+              {% endif %}
+            unit_of_measurement: "%"
+
+    automation:
+
+      - id: Управление подсветкой цоколя в коридоре
+        alias: corridor_light_moving_control_1
+        initial_state: true
+        trigger:
+    # Датчик движения
+        - platform: state
+          entity_id: binary_sensor.corridor_occupancy
+        - platform: event
+          event_type: timer.finished
+          id: timer_corridor_led
+          event_data:
+            entity_id: timer.timer_corridor_led
+        action:
+            - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: binary_sensor.corridor_occupancy
+                    state: 'on'
+                  - condition: state
+                    entity_id: light.corridor_led
+                    state: 'off'
+                  - condition: state
+                    entity_id: input_boolean.auto_corridor_led 
+                    state: 'on'
+                  - condition: state
+                    entity_id: switch.switch_corridor_ligth_top_left
+                    state: 'off'
+                  - condition: state
+                    entity_id: switch.switch_corridor_ligth_top_right
+                    state: 'off'
+                  
+                sequence:
+                  # - data:
+                  #     entity_id: timer.timer_corridor_led
+                  #   service: timer.cancel
+                  # - delay: 00:00:01
+                  # - data:
+                  #     entity_id: timer.timer_corridor_led
+                  #     duration: "{{ states('input_select.corridor_led_time') }}"
+                  #   service: timer.start
+                   
+
+                  - service: light.turn_on
+                    entity_id:
+                      - light.corridor_led
+                    data_template:
+                      brightness_pct: "{{ states('sensor.corridor_led_brightness') }}"
+              - conditions:
+                  - condition: state
+                    entity_id: binary_sensor.corridor_occupancy
+                    to: 'off'
+                    for: "{{ states('input_select.corridor_led_time') }}"
+                  - condition: state
+                    entity_id: light.corridor_led
+                    state: 'on'
+                sequence:
+                  - service: light.turn_off
+                    entity_id:
+                      - light.corridor_led 
+              - conditions:
+                  - "{{ trigger.platform == 'event' and trigger.id == 'timer_corridor_led'}}"
+                sequence:
+                  - service: light.turn_off
+                    entity_id:
+                      - light.corridor_led  
+                  # - service: switch.turn_off
+                  #   entity_id:
+                  #     - switch.switch_corridor_ligth_top_left
+                  #     - switch.switch_corridor_ligth_top_right
+
+
+
+      - id: Управление подсветкой цоколя в коридоре по датчику движения и по сенсору
+        alias: corridor_light_moving_control_2
+        initial_state: false
+        trigger:
+    # Датчик движения
+        - platform: state
+          entity_id: binary_sensor.corridor_occupancy
+    # Сенсор шаблона
+        - platform: state
+          entity_id: binary_sensor.corridor_light
+        action:
+            - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: binary_sensor.corridor_occupancy
+                    state: 'on'
+                  - condition: state
+                    entity_id: light.corridor_led
+                    state: 'off'
+                sequence:
+                  - service: light.turn_on
+                    entity_id:
+                      - light.corridor_led
+                    data_template:
+                      brightness_pct: 100
+              - conditions:
+                  - condition: state
+                    entity_id: binary_sensor.corridor_light
+                    state: 'on'
+                sequence:
+                  - service: light.turn_off
+                    entity_id:
+                      - light.corridor_led

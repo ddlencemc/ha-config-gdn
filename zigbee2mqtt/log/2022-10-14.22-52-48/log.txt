@@ -1,0 +1,1 @@
+error 2022-10-14 22:55:27: MQTT error: read ECONNRESET

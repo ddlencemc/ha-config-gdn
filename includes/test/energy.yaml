@@ -1,0 +1,35 @@
+title: Элетросеть
+icon: mdi:transmission-tower
+cards:
+  - type: entities
+    show_header_toggle: false
+    title: Квартира
+    entities:
+        state_color: true
+      - type: divider
+        style:
+          height: 1px
+          width: 80%
+          margin-left: auto
+          margin-right: auto
+          background: '#62717b'
+      - entity: sensor.esp_energy_monitor_voltage     
+      - entity: sensor.esp_energy_monitor_frequency
+  
+      - entity: sensor.esp_energy_monitor_power
+      - entity: sensor.esp_energy_monitor_current
+      - entity: sensor.esp_energy_monitor_power_factor
+
+      - entity: sensor.esp_energy_monitor_uptime
+
+      - entity: sensor.esp_energy_monitor_power_kw
+      - entity: sensor.esp_energy_monitor_power_day
+      - entity: sensor.esp_energy_monitor_power_night 
+
+      - entity: sensor.esp_energy_monitor_energy_daily_day
+      - entity: sensor.esp_energy_monitor_energy_daily_night
+      - entity: sensor.esp_energy_monitor_energy_daily
+      - entity: sensor.esp_energy_monitor_energy_monthly
+      - entity: sensor.esp_energy_monitor_energy_monthly_day
+      - entity: sensor.esp_energy_monitor_energy_monthly_night
+      - entity: sensor.esp_energy_monitor_energy    

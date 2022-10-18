@@ -1,0 +1,27 @@
+telegram_control:
+
+    automation:
+
+    ## Стартовая автоматизация для запуска меню
+      - id: Вызов меню управления телеграм
+        alias: telegram_menu_start
+        initial_state: true
+        trigger:
+          - platform: event
+            event_type: telegram_command
+            event_data:
+              command: '/go'
+        action:
+          - service: telegram_bot.send_message
+            data:
+              target: "{{ trigger.event.data.user_id }}"
+              message: &msg_bt |
+                {{'\U0001F324'}} Климат:
+                
+                {{'\U000026F1'}} На улице: {{'\U0001F321'}} {{ states('sensor.espws_outside_temperature') }} °C, {{'\U0001F4A7'}} {{ states('sensor.espws_outside_humidity') }} %, {{'\U0001F29A'}} {{ states('sensor.espws_pressure') }} mmHg
+                
+                {{'\U0001F6CB'}} В зале: {{'\U0001F321'}} {{ states('sensor.espws_inside_temperature') }} °C 
+                
+                {{'\U0001F963'}} На кухне: {{'\U0001F321'}} {{ states('sensor.lywsd02_temperature') }} °C, {{'\U0001F4A7'}} {{ states('sensor.lywsd02_humidity') }} %
+                
+                {{"\U0001F422"}} Террариум: {{'\U0001F321'}} {{ states('sensor.terrarium_temp_humidity_temperature') }} °C, {{'\U0001F4A7'}} {{ states('sensor.terrarium_temp_humidity_humidity') }} %

@@ -1,0 +1,92 @@
+rollet_kate_bedroom:
+
+
+    template:
+      - sensors:
+          rollet_kate_state:
+            friendly_name: 'Жалюзи у Кати'
+            value_template: >-
+              {% set state_status = state_attr('cover.rollet_kateroom', 'current_position') | int %}
+
+              {% if state_attr('cover.rollet_kateroom', 'motor_state') == 'declining' %}
+                Закрываются
+              {% elif state_attr('cover.rollet_kateroom', 'motor_state') == 'rising' %}
+                Открываются
+              {% elif state_status  >= 80 %}
+                Открыты
+              {% elif state_status < 80 and state_status > 20 %}
+                Приоткрыты
+              {% else %}
+                Закрыты
+              {% endif %}
+            icon_template: >-
+              {% set state_status = state_attr('cover.rollet_kateroom', 'current_position') | int %}
+              {% if state_status >= 80 %}
+                mdi:blinds-open
+              {% elif state_status < 80 and state_status > 30 %}
+                mdi:gamepad-circle
+              {% else %}
+                mdi:blinds
+              {% endif %}
+            # state_color_tamplate: >-
+            #   {{ is_state('cover.rollet_kateroom', 'opened')}}
+
+      - binary_sensor:
+
+          - name: rollet_kate_state_onoff
+            state: >
+              {{ is_state('cover.rollet_kateroom', 'open') }}
+
+
+    automation:
+
+      - id: Автоматическое управление роллетой у Кати
+        alias: auto_kateroom_rollet
+        initial_state: true
+        trigger:
+          - platform: state
+            entity_id: input_button.button_kateroom_rollet
+        action:
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: cover.rollet_kateroom
+                    state: 'open'
+                sequence:
+                  - service: cover.close_cover
+                    entity_id: cover.rollet_kateroom
+              - conditions:
+                  - condition: state
+                    entity_id: cover.rollet_kateroom
+                    state: 'closed'
+                sequence:
+                  - service: cover.open_cover
+                    entity_id: cover.rollet_kateroom
+
+              
+
+
+
+      - id: kateroom_rollet_tuggle 
+        alias: kateroom_rollet_tuggle
+        initial_state: true
+        trigger:
+        - platform: state
+          entity_id: sensor.pilot_kate_action
+          to: '2_double'
+        action:
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: binary_sensor.rollet_kate_state_onoff
+                    state: 'on'
+                sequence:
+                  - service: cover.close_cover
+                    entity_id: cover.rollet_kateroom
+              - conditions:
+                  - condition: state
+                    entity_id: binary_sensor.rollet_kate_state_onoff
+                    state: 'off'
+                sequence:
+                  - service: cover.open_cover
+                    entity_id: cover.rollet_kateroom

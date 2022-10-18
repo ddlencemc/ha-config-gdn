@@ -1,0 +1,65 @@
+all_lights:
+  name: Весь свет
+  entities:
+    - group.hall_ligths
+    - group.bedroom_lights
+    - group.cabinet_lights
+    - group.kitchen_lights
+    - group.livingroom_lights
+    - group.kateroom_lights
+    - group.bath1_lights
+    - group.bath2_lights    
+
+hall_ligths:
+  name: Прихожая
+  entities:
+    - switch.switch_corridor_ligth_top_left
+    - switch.switch_corridor_ligth_top_right
+    - ligth.corridor_led
+
+bedroom_lights:
+  name: Спальня
+  entities:
+    - switch.switch_bedroom_light_top    
+    - switch.switch_bedroom_light_wall_left
+    - switch.switch_bedroom_light_wall_right
+
+cabinet_lights:
+  name: Кабинет
+  entities:
+    - switch.switch_kabinet_ligth_top_left
+    - switch.switch_kabinet_ligth_top_right
+
+kitchen_lights:
+  name: Кухня
+  entities:
+    - light.light_kitchen_backlight
+    - switch.switch_kitchen_bottom_light
+    - switch.switch_living_room_ligth_chandelier_left
+    #- switch.switch_living_room_ligth_top_right
+
+livingroom_lights:
+  name: Зал
+  entities:
+    - switch.switch_living_room_ligth_chandelier_left   
+    - switch.switch_living_room_ligth_chandelier_right 
+    - switch.switch_living_room_ligth_top_left 
+    - switch.switch_living_room_ligth_top_right 
+
+kateroom_lights:    
+  name: Катина комната
+  entities:
+    - switch.switch_kateroom_ligth_top_left   
+    - switch.switch_kateroom_ligth_top_right 
+
+bath1_lights:
+  name: Большая ванная
+  entities:
+    - switch.switch_bathroom_1_left
+    - switch.switch_bathroom_1_right    
+
+bath2_lights:
+  name: Маленькая ванная
+  entities:
+    - switch.switch_bathroom_2_left   
+    - switch.switch_bathroom_2_right       

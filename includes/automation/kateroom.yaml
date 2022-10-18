@@ -1,0 +1,32 @@
+- alias: kateroom_nightlight_toggle
+  id: bedroom_nightlight_toggle
+  initial_state: true
+  trigger:
+   - platform: state
+     entity_id: sensor.pilot_kate_action
+     to: '2_single'
+  action:
+   - service: switch.toggle
+     entity_id: switch.switch_kate_nightlight
+     
+- alias: kateroom_light_top_left_toggle
+  id: kateroom_light_top_left_toggle
+  initial_state: true
+  trigger:
+   - platform: state
+     entity_id: sensor.pilot_kate_action
+     to: '1_single'
+  action:
+   - service: switch.toggle
+     entity_id: switch.switch_kateroom_ligth_top_left
+     
+- alias: kateroom_light_top_right_toggle
+  id: kateroom_light_top_right_toggle
+  initial_state: true
+  trigger:
+   - platform: state
+     entity_id: sensor.pilot_kate_action
+     to: '3_single'
+  action:
+   - service: switch.toggle
+     entity_id: switch.switch_kateroom_ligth_top_right

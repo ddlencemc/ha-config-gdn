@@ -1,0 +1,388 @@
+bathroom_ventilation:
+
+    input_button:
+      auto_vent_max:
+        name: Автоматическое управление максимальной вытяжкой
+        icon: mdi:fan
+
+      auto_vent_min:
+        name: Автоматическое управление минимальной вытяжкой
+        icon: mdi:fan 
+
+    input_number:
+      hum_high_on:
+        name: Влажность для включения вытяжки
+        min: 60
+        max: 90
+        step: 1
+        unit_of_measurement: '%' 
+        
+      hum_low_off:
+        name: Влажность для выключения вытяжки
+        min: 10
+        max: 104
+        step: 1
+        unit_of_measurement: '%'
+      
+
+    input_select:    
+      vent_min_on_time:
+        name: Время для включения минимальной вытяжки
+        options:
+          - 00:00:10
+          - 00:01:00
+          - 00:02:00
+          - 00:03:00
+          - 00:04:00
+          - 00:05:00
+          - 00:06:00
+          - 00:07:00
+          - 00:08:00
+          - 00:09:00
+          - 00:10:00
+
+      vent_min_off_time:
+        name: Время для выключения минимальной вытяжки
+        options:
+          - 00:00:10
+          - 00:05:00
+          - 00:10:00
+          - 00:15:00
+          - 00:20:00
+          - 00:25:00
+          - 00:30:00
+
+    input_boolean:
+      auto_vent_max:
+        name: Автоматическое управление сильной вытяжкой
+        icon: mdi:script-text-play-outline
+
+      auto_vent_min:
+        name: Автоматическое управление слабой вытяжкой
+        icon: mdi:script-text-play-outline
+
+      
+
+    timer:    
+        vent_min_on:
+          name: Вытяжка будет включена через - 
+          duration: '00:03:00'
+          restore: true 
+
+        vent_min_off:
+          name: Вытяжка будет выключена через - 
+          duration: '00:15:00'
+          restore: true   
+
+
+    template:   
+    
+      - binary_sensor:
+
+          - name: sensor_hum_high_on
+            state: >
+              {{ is_state('switch.fan_bathroom_1_l2', 'off')
+                 and (states('sensor.bathroom1_temp_humidity_humidity') | int >= (states('input_number.hum_high_on') | int))
+                 and is_state('input_boolean.auto_vent_max', 'on')
+              }}
+              
+          - name: sensor_hum_low_off
+            state: >
+              {{ is_state('switch.fan_bathroom_1_l2', 'on')
+                 and (states('sensor.bathroom1_temp_humidity_humidity') | int <= (states('input_number.hum_low_off') | int))
+                 and is_state('input_boolean.auto_vent_max', 'on')
+              }}
+
+          - name: sensor_light_batroom_1_on
+            state: >
+              {{ is_state('switch.switch_bathroom_1_right', 'on') or is_state('switch.switch_bathroom_1_left', 'on') }}
+
+          - name: sensor_light_batroom_1_vent_off
+            state: > 
+              {{ is_state('timer.vent_min_off', 'active')  }}
+
+          - name: allow_change_humidity_bb
+            state: >
+              {{  is_state('switch.switch_bathroom_1_right', 'off') and 
+                  is_state('switch.switch_bathroom_1_left', 'off') and 
+                  is_state('switch.fan_bathroom_1_l1', 'off') and
+                  is_state('switch.fan_bathroom_1_l2', 'off')
+              }}
+
+                
+    automation:
+
+      - id: Автоматическое управление максимальной вытяжкой
+        alias: auto_bathroom_ventilation_max
+        initial_state: true
+        trigger:
+          - platform: state
+            entity_id: binary_sensor.sensor_hum_high_on
+            to: 'on'
+          - platform: state
+            entity_id: binary_sensor.sensor_hum_low_off
+            to: 'on'
+        action:
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: binary_sensor.sensor_hum_high_on
+                    state: 'on'
+                sequence:
+                  - service: switch.turn_on
+                    data:
+                      entity_id: switch.fan_bathroom_1_l2
+                  - service: switch.turn_off
+                    data:
+                      entity_id: switch.fan_bathroom_1_l1
+              - conditions:
+                  - condition: state
+                    entity_id: binary_sensor.sensor_hum_low_off
+                    state: 'on'
+                sequence:
+                  - service: switch.turn_off
+                    data:
+                      entity_id: switch.fan_bathroom_1_l2
+
+      - id: Автоматическое управление минимальной вытяжкой
+        alias: auto_bathroom_ventilation_min
+        initial_state: true
+        trigger:
+          - platform: state
+            entity_id: binary_sensor.sensor_light_batroom_1_on
+            to: 'on'
+          - platform: state
+            entity_id: binary_sensor.sensor_light_batroom_1_on
+            to: 'off'
+          - platform: event
+            event_type: timer.finished
+            id: vent_on
+            event_data:
+              entity_id: timer.vent_min_on
+          - platform: event
+            id: vent_off
+            event_type: timer.finished
+            event_data:
+              entity_id: timer.vent_min_off
+        condition:  
+          condition: and
+          conditions:
+            - condition: state
+              entity_id: input_boolean.auto_vent_min
+              state: 'on'
+            - condition: state
+              entity_id: switch.fan_bathroom_1_l2
+              state: 'off'
+        action:
+          - choose:
+              #Включаем свет любым выключателем, триггерует бинарный сенсор, 
+              #должен включиться таймер на включение вытяжки 
+              - conditions:
+                  - "{{ trigger.platform == 'state' }}"
+                  - condition: state
+                    entity_id: binary_sensor.sensor_light_batroom_1_on
+                    state: 'on'
+                  - condition: state
+                    entity_id: timer.vent_min_on
+                    state: idle
+                  - condition: state
+                    entity_id: timer.vent_min_off
+                    state: idle
+                  - condition: state
+                    entity_id: switch.fan_bathroom_1_l1
+                    state: 'off'
+                  - condition: state
+                    entity_id: switch.fan_bathroom_1_l2
+                    state: 'off'
+                sequence:
+                  - data:
+                      entity_id: timer.vent_min_on
+                      duration: "{{ states('input_select.vent_min_on_time') }}"
+                    service: timer.start
+              - conditions:
+                  - "{{ trigger.platform == 'state' }}"
+                  - condition: state
+                    entity_id: binary_sensor.sensor_light_batroom_1_on
+                    state: 'on'
+                  - condition: state
+                    entity_id: timer.vent_min_on
+                    state: idle
+                  - condition: state
+                    entity_id: timer.vent_min_off
+                    state: active
+                  - condition: state
+                    entity_id: switch.fan_bathroom_1_l1
+                    state: 'on'
+                sequence:
+                  - service: timer.cancel
+                    entity_id: timer.vent_min_off
+
+              #Выключаем свет во время работы ТАЙМЕРА1 на влючение вытяжки, триггерует бинарный сенсор
+              #Таймер должен отключиться
+              - conditions:
+                  - condition: state
+                    entity_id: binary_sensor.sensor_light_batroom_1_on
+                    state: 'off'
+                  - condition: state
+                    entity_id: timer.vent_min_on
+                    state: active
+                sequence:
+                  - service: timer.cancel
+                    entity_id: timer.vent_min_on
+
+                  - service: input_boolean.turn_on
+                    entity_id: input_boolean.auto_vent_max
+                  ###
+
+              #Выключаем свет во время работы ВЫТЯЖКИ, триггерует бинарный сенсор
+              #ТАЙМЕР2 на отключение вытяжки должен запуститься
+              - conditions:
+                  - "{{ trigger.platform == 'state' }}"
+                  - condition: state
+                    entity_id: binary_sensor.sensor_light_batroom_1_on
+                    state: 'off'
+                  - condition: state
+                    entity_id: switch.fan_bathroom_1_l1
+                    state: 'on'
+                sequence:
+                  - data:
+                      entity_id: timer.vent_min_off
+                      duration: "{{ states('input_select.vent_min_off_time') }}"
+                    service: timer.start
+                  - service: input_boolean.turn_on
+                    entity_id: input_boolean.auto_vent_max                 
+
+              #Выключаем свет во время отключенной АВТОМАТИЗАЦИИ, триггерует бинарный сенсор
+              #АВТОМАТИЗАЦИЯ должна запуститься
+              - conditions:
+                  - "{{ trigger.platform == 'state' }}"
+                  - condition: state
+                    entity_id: binary_sensor.sensor_light_batroom_1_on
+                    state: 'off'
+                  - condition: state
+                    entity_id: input_boolean.auto_vent_max 
+                    state: 'off'
+                sequence:
+                  - service: input_boolean.turn_on
+                    entity_id: input_boolean.auto_vent_max 
+
+              #ТАЙМЕР1 закончил работу, должен запустить ВЫТЯЖКУ, триггерит евент таймера по завершению
+              - conditions:
+                  - "{{ trigger.platform == 'event' and trigger.id == 'vent_on'}}"
+                  - condition: state
+                    entity_id: switch.fan_bathroom_1_l1
+                    state: 'off'
+                sequence:
+                  - service: switch.turn_on
+                    entity_id: switch.fan_bathroom_1_l1  
+
+              #ТАЙМЕР2 закончил работу, должен ВЫКЛЮЧИТЬ ВЫТЯЖКУ, триггерит евент таймера по завершению
+              - conditions:
+                  - "{{ trigger.platform == 'event' and trigger.id == 'vent_off'}}"
+                  - condition: state
+                    entity_id: switch.fan_bathroom_1_l1
+                    state: 'on'                    
+                sequence:
+                  - service: switch.turn_off
+                    data:
+                      entity_id: switch.fan_bathroom_1_l1 
+                  - delay: '00:00:02'
+                  - service: automation.trigger
+                    data:
+                      entity_id: automation.auto_bathroom1_set_humidity_min
+
+
+
+      - id: Атоматическое изменение нижнего порога влажности
+        alias: auto_bathroom1_set_humidity_min
+        initial_state: true
+        trigger:
+          - platform: template
+            value_template: >-
+              {{ states('input_number.hum_low_off')| int !=
+                states('sensor.bathroom1_temp_humidity_humidity')|int + 3}}
+        action:
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: binary_sensor.allow_change_humidity_bb
+                    state: 'on'
+                sequence:
+                  - service: input_number.set_value
+                    target:
+                      entity_id: input_number.hum_low_off 
+                    data:
+                      value: "{{ states('sensor.bathroom1_temp_humidity_humidity') | int + 3 }}"
+
+
+      - id: Отключение второй скорости вытяжки
+        alias: auto_fan_bathroom_1_l2_off
+        initial_state: true
+        trigger:
+          - platform: state
+            entity_id: switch.fan_bathroom_1_l2
+            to: 'off'
+        action:
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: binary_sensor.sensor_light_batroom_1_on
+                    state: 'on'
+                sequence:
+                  - service: switch.turn_off
+                    data:
+                      entity_id: switch.fan_bathroom_1_l2
+                  - service: switch.turn_on
+                    data:
+                      entity_id: switch.fan_bathroom_1_l1
+              - conditions:
+                  - condition: state
+                    entity_id: binary_sensor.allow_change_humidity_bb
+                    state: 'on'
+                sequence:
+                  - service: automation.trigger
+                    data:
+                      entity_id: automation.auto_bathroom1_set_humidity_min
+
+
+      - id: Синглклик кнопкой в ванной
+        alias: bathroom_pilot_single_action
+        initial_state: true
+        trigger:
+        - platform: state
+          entity_id: sensor.pilot_bathroom_action
+          to: 'single'
+        action:
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: binary_sensor.sensor_light_batroom_1_on
+                    state: 'on'
+                sequence:
+                  - service: switch.toggle
+                    entity_id: switch.switch_bathroom_1_left
+
+      - id: Даблклик кнопкой в ванной
+        alias: bathroom_pilot_double_action
+        initial_state: true
+        trigger:
+        - platform: state
+          entity_id: sensor.pilot_bathroom_action
+          to: 'double'
+        condition:  
+          condition: and
+          conditions:
+            - condition: state
+              entity_id: binary_sensor.sensor_light_batroom_1_on
+              state: 'on'
+        action:
+          # - service: input_boolean.toggle
+          #   entity_id: input_boolean.auto_vent_max 
+          - service: switch.toggle
+            entity_id: switch.fan_bathroom_1_l2
+          - service: timer.cancel
+            entity_id: timer.vent_min_on
+          
+      
+# input_boolean.auto_vent_max
+            

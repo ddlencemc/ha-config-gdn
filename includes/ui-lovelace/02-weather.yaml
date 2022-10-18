@@ -1,0 +1,78 @@
+title: Погода
+icon: mdi:weather-partly-snowy-rainy
+cards:
+  - type: vertical-stack
+    cards:
+#        - type: markdown  # Заголовок
+#          content: >
+#            **Погода на улице**
+    - type: weather-forecast
+      entity: weather.openweathermap
+    - type: horizontal-stack # горизонтальня сортировка
+      cards:
+        - type: sensor
+          name: Температура
+          graph: line
+          unit: "°C"
+          entity: sensor.espws_outside_temperature
+        - type: sensor
+          name: Влажность
+          graph: line
+          unit: "%"
+          icon: mdi:water-percent
+          entity: sensor.espws_outside_humidity
+
+    - type: horizontal-stack # горизонтальня сортировка
+      cards:
+        - type: sensor
+          name: Давление
+          graph: line
+          unit: "mmHg"
+          icon: mdi:gauge
+          entity: sensor.espws_pressure
+        - type: sensor
+          name: Точка росы
+          graph: line
+          unit: "°C"
+          icon: mdi:thermometer-low
+          entity: sensor.espws_outside_dev_point
+
+  - type: vertical-stack
+    cards:
+    - type: markdown  # Заголовок
+      content: >
+        **Климат дома**
+
+    - type: sensor
+      name: Зал
+      graph: line
+      unit: "°C"
+      entity: sensor.espws_inside_temperature
+    - type: horizontal-stack # горизонтальня сортировка
+      cards:
+        - type: sensor
+          name: Кухня температура
+          graph: line
+          unit: "°C"
+          entity: sensor.lywsd02_temperature
+        - type: sensor
+          name: Кухня Влажность
+          graph: line
+          unit: "%"
+          #icon: mdi:water-percent
+          entity: sensor.lywsd02_humidity
+          #secondary_info: last-changed
+    - type: horizontal-stack # горизонтальня сортировка
+      cards:
+        - type: sensor
+          name: Террариум температура
+          graph: line
+          unit: "°C"
+          entity: sensor.terrarium_temp_humidity_temperature
+        - type: sensor
+          name: Террариум Влажность
+          graph: line
+          unit: "%"
+          #secondary_info: last-changed
+          #icon: mdi:water-percent
+          entity: sensor.terrarium_temp_humidity_humidity

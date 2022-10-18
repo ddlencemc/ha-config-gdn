@@ -1,0 +1,105 @@
+title: Главная
+icon: mdi:home-assistant
+cards:
+    
+    - type: vertical-stack
+      cards:
+        - type: markdown
+          content: >
+              **Текущее состояние**
+        - type: entities
+          show_header_toggle: true
+          entities:
+            - entity: sensor.date
+              name: Дата
+              icon: mdi:calendar-check-outline
+            - entity: sensor.time
+              name: Текущее время
+              icon: mdi:clock-outline
+            - entity: sensor.last_boot_custom
+            - entity: sensor.online_custom
+            #- type: divider
+#            - type: markdown
+#              content: >
+#                 **Резервное копирование**
+        - type: entities
+          show_header_toggle: false
+          entities:
+            - entity: sensor.last_google_backup_train
+              #icon: mdi:water-plus
+            - entity: sensor.snapshots_in_google_drive_train
+              #icon: mdi:water-minus
+            - entity: sensor.snapshots_in_hassio_train
+        - type: horizontal-stack
+          cards:
+          - type: entities
+            show_header_toggle: false
+            entities:
+              - entity: sensor.maria_db_size
+                name: Объем БД
+                icon: mdi:database
+          - type: entities
+            show_header_toggle: false
+            entities:
+              - entity: sensor.espws_rssi
+                name: ESP wi-fi сигнал
+                icon: mdi:car-esp
+    - type: vertical-stack
+      cards:
+        - type: markdown
+          content: >
+            **Графики**
+        - type: horizontal-stack
+          cards:
+
+          - type: history-graph
+            hours_to_show: 1
+            entities:
+              #- sensor.cpu_freaquency
+              - entity: sensor.cpu_temperature
+                name: Температура CPU
+        - type: horizontal-stack
+          cards:
+            - type: gauge
+              name: Загрузка CPU
+              unit: '%'
+              entity: sensor.processor_use_percent
+              severity:
+                green: 0
+                yellow: 60
+                red: 85
+            - type: gauge
+              name: Загрузка ОЗУ
+              unit: '%'
+              entity: sensor.memory_use_percent
+              severity:
+                green: 0
+                yellow: 60
+                red: 85
+        - type: horizontal-stack
+          cards:
+            - type: gauge
+              name: Диск заполнен
+              unit: '%'
+              entity: sensor.disk_use_percent
+              severity:
+                green: 0
+                yellow: 60
+                red: 85    
+            - type: gauge
+              name: Свободное место
+              unit: 'Гб'
+              min: 0
+              max: 119
+              entity: sensor.disk_free
+              severity:
+                red: 2
+                yellow: 20
+                green: 80
+        - type: horizontal-stack
+          cards:
+          - type: history-graph
+            entities:
+              - entity: sensor.maria_db_size
+                name: Maria DB
+

@@ -1,0 +1,203 @@
+telegramm:
+
+  sensor:
+    - platform: template
+      sensors:
+
+        unavailable_now_light:
+          friendly_name: "Всего недоступных светильников - "
+          # entity_id:
+          #   - sensor.time
+          value_template: "{{states.light | selectattr ('state', 'equalto', 'unavailable') | list | length}}"
+          icon_template: mdi:counter
+
+        unavailable_now_switch:
+          friendly_name: "Всего недоступных реле - "
+          # entity_id:
+          #   - sensor.time
+          value_template: "{{states.switch | selectattr ('state', 'equalto', 'unavailable') | list | length}}"
+          icon_template: mdi:counter
+
+        unavailable_now_sensor:
+          friendly_name: "Всего недоступных сенсоров - "
+          # entity_id:
+          #   - sensor.time
+          value_template: "{{states.sensor | selectattr ('state', 'equalto', 'unavailable') | list | length}}"
+          icon_template: mdi:counter
+
+        unavailable_now_binary_sensor:
+          friendly_name: "Всего недоступных бинарных сенсоров - "
+          # entity_id:
+          #   - sensor.time
+          value_template: "{{states.binary_sensor | selectattr ('state', 'equalto', 'unavailable') | list | length}}"
+          icon_template: mdi:counter
+
+  script:
+    send_message_1:
+      alias: Отправка через сервис уведомлений
+      sequence:
+        - service: notify.tgm_administration
+          data:
+            message: "Иван дома"
+    send_message_2:
+      alias: Отправка через сервис уведомлений
+      sequence:
+        - service: notify.tgm_administration
+          data:
+            message: "Иван ушел из дома"
+
+    system_report:
+      alias: Отправка отчета о состоянии системы
+      sequence:
+        - service: notify.tgm_administration
+          data:
+            message: |
+              {{"\U0001F6C0"}} Состояние системы
+              {{"\U0001F567"}} Отчет за {{ states('sensor.time_date') }}
+              {{"\U0001F4A1"}} Светильников недоступно - {{ states('sensor.unavailable_now_light') }}
+              {{"\U0001F50C"}} Свичей недоступно - {{ states('sensor.unavailable_now_switch') }}
+              {{"\U0001F321"}} Сенсоров недоступно - {{ states('sensor.unavailable_now_sensor') }}
+              {{"\U0001F51F"}} Бинарных сенсоров недоступно - {{ states('sensor.unavailable_now_binary_sensor') }}
+              {{"\U0001F51F"}} Mi Band 2 - {{ states('binary_sensor.mi_band_2') }}
+              {{"\U0001F51F"}} Mi Band 5 - {{ states('binary_sensor.kate_mi_band_5') }}
+    
+    terrarium_report:
+      alias: Отправка отчета Террариума
+      sequence:
+        - service: notify.tgm_katya
+          data:
+            message: |
+              {{"\U0001F422"}} Состояние Террариума на {{"\U0001F567"}}{{ states('sensor.time_date') }}
+              {{"\U0001F321"}} Температура - {{ states('sensor.mijia_temp_humidity_temperature') }}C
+              {{"\U0001F4A7"}} Влажноcть - {{ states('sensor.mijia_temp_humidity_humidity') }}%
+              
+        - service: notify.tgm_valeriya
+          data:
+            message: |
+              {{"\U0001F422"}} Состояние Террариума на {{"\U0001F567"}}{{ states('sensor.time_date') }}
+              {{"\U0001F321"}} Температура - {{ states('sensor.terrarium_temp_humidity_temperature') }}C
+              {{"\U0001F4A7"}} Влажноcть - {{ states('sensor.terrarium_temp_humidity_humidity') }}%
+              
+
+  automation:
+
+    - id: Отчет при запуске системы
+      alias: start_message
+      initial_state: true
+      trigger:
+        - platform: homeassistant
+          event: start
+      action:
+        - service: notify.tgm_administration
+          data:
+            message: |
+              {{"\U0001F4AC"}} Основной сервер RPI-Server
+              {{"\U0001F567"}} Зафиксирован запуск в {{ states('sensor.time_date') }}
+              {{"\U0001F4C3"}} Отчет о состоянии будет через 1 минуту
+        - delay: 00:01:10
+        - service: script.turn_on
+          entity_id: script.system_report
+
+    - id: Запрос на отчет
+      alias: send_report
+      initial_state: true
+      trigger:
+        - platform: event
+          event_type: telegram_command
+          event_data:
+            command: '/report'
+      action:
+        - service: script.turn_on
+          entity_id:
+            - script.system_report
+            
+    - id: Террариум отчет
+      alias: send_terrarium_report
+      initial_state: true
+      trigger:
+        - platform: event
+          event_type: telegram_command
+          event_data:
+            command: '/terrarium'
+      action:
+        - service: script.turn_on
+          entity_id:
+            - script.terrarium_report
+
+    - id: Иван Дома
+      alias: ivan_at_home
+      initial_state: true
+      trigger:
+        - platform: state
+          entity_id: binary_sensor.mi_band_2
+          to: "on"
+          from: "off"
+      action:
+        - service: notify.tgm_administration
+          data:
+            message: "Иван дома"
+
+    - id: Иван не дома
+      alias: ivan_not_home
+      initial_state: true
+      trigger:
+        - platform: state
+          entity_id: binary_sensor.mi_band_2
+          to: "off"
+          from: "on"
+      action:
+        - service: notify.tgm_administration
+          data:
+            message: "Иван не дома"
+            
+    - id: Катя Дома
+      alias: kate_at_home
+      initial_state: true
+      trigger:
+        - platform: state
+          entity_id: binary_sensor.kate_amazfit_gts_3
+          to: "on"
+          from: "off"
+      action:
+        - service: notify.tgm_administration
+          data:
+            message: "Катя дома"
+
+    - id: Катя не дома
+      alias: kate_not_home
+      initial_state: true
+      trigger:
+        - platform: state
+          entity_id: binary_sensor.kate_amazfit_gts_3
+          to: "off"
+          from: "on"
+      action:
+        - service: notify.tgm_administration
+          data:
+            message: "Катя не дома"
+
+    - id: Валерочка Дома
+      alias: val_at_home
+      initial_state: true
+      trigger:
+        - platform: state
+          entity_id: binary_sensor.valeriya_mi_band_5
+          to: "on"
+          from: "off"
+      action:
+        - service: notify.tgm_administration
+          data:
+            message: "Валерочка дома"
+
+    - id: Валерочка не дома
+      alias: val_not_home
+      initial_state: true
+      trigger:
+        - platform: state
+          entity_id: binary_sensor.valeriya_mi_band_5
+          to: "off"
+          from: "on"
+      action:
+        - service: notify.tgm_administration
+          data:
+            message: "Валерочка не дома"            

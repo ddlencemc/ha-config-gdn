@@ -1,0 +1,47 @@
+  # - platform: mqtt
+  #   name: switch_terrarium_light
+  #   command_topic: "TerrariumController/switch_terrarium/action"
+  #   state_topic: "TerrariumController/switch_terrarium/"
+  #   payload_on: "ON"
+  #   payload_off: "OFF"
+  #   retain: true
+
+    # availability:
+    #   - topic: "TerrariumController/switch_terrarium/status"
+
+    # state_on: "ON"
+    # state_off: "OFF"
+    # optimistic: false
+    # qos: 0
+
+
+  # - platform: mqtt
+  #   name: switch_terrarium_light
+  #   state_topic: "TerrariumController/switch_terrarium/status"
+  #   command_topic: "TerrariumController/switch_terrarium/action"
+  #   availability:
+  #     - topic: "TerrariumController/switch_terrarium/status"
+  #   payload_on: "ON"
+  #   payload_off: "OFF"
+  #   state_on: "ON"
+  #   state_off: "OFF"
+  #   optimistic: false
+  #   qos: 0
+  #   retain: true
+
+  # mqtt:
+  #   switch:
+  #     - unique_id: switch_terrarium_light
+  #       name: switch_terrarium_light
+  #       friendly_name: "Террариум лампы"
+  #       state_topic: "TerrariumController/switch_terrarium/"
+  #       command_topic: "TerrariumController/switch_terrarium/action"
+  #       availability:
+  #         - topic: "TerrariumController/switch_terrarium/status"
+  #       payload_on: "ON"
+  #       payload_off: "OFF"
+  #       state_on: "ON"
+  #       state_off: "OFF"
+  #       optimistic: false
+  #       qos: 0
+  #       retain: true

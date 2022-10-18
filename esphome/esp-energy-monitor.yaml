@@ -1,0 +1,300 @@
+substitutions:
+  board_name: Esp-Energy-Monitor
+  #NEW
+esphome:
+  name: esp-energy-monitor
+
+esp8266:
+  board: d1_mini
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: !secret api_password
+
+ota:
+  password: !secret ota_password
+
+web_server:
+  port: 8081
+
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  reboot_timeout: 15min
+  manual_ip:
+    static_ip: !secret ip_energy_monitor
+    gateway: 192.168.0.1
+    subnet: 255.255.255.0
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Esp-Energy-Monitor"
+    password: !secret ap_password
+
+captive_portal:
+    
+    
+uart:
+  rx_pin: D1
+  tx_pin: D2
+  baud_rate: 9600
+  id: pzem_uart
+
+
+
+binary_sensor:
+  - platform: status
+    name: ${board_name}_Status
+    id: id_status
+
+
+text_sensor:
+  - platform: template
+    name: ${board_name}_Uptime
+    lambda: |-
+        int seconds = round(id(uptime_sensor).raw_state);
+        int days = seconds / (24 * 3600);
+        seconds = seconds % (24 * 3600);
+        int hours = seconds / 3600;
+        seconds = seconds % 3600;
+        int minutes = seconds /  60;
+        seconds = seconds % 60;
+        return (
+          (days ? to_string(days) + "d " : "00d ") +
+          (hours ? to_string(hours) + "h " : "00h ") +
+          (minutes ? to_string(minutes) + "m " : "00m ") +
+          (to_string(seconds) + "s")
+        );
+    icon: mdi:clock-start
+    update_interval: 15s
+  
+  - platform: wifi_info
+    ip_address:
+      name: ${board_name}_IP
+    ssid:
+      name: ${board_name}_SSID
+    bssid:
+      name: ${board_name}_BSSID
+    mac_address:
+      name: ${board_name}_Mac
+    scan_results:
+      name: ${board_name}_Latest_Scan_Results
+
+  - platform: version
+    name: ${board_name}_ESPHome_Version
+    hide_timestamp: true
+
+sensor:
+  - platform: uptime
+    name: ${board_name}_Uptime_s
+    id: uptime_sensor
+    update_interval: 15s
+
+  - platform: wifi_signal
+    name: ${board_name} WiFi RSSI
+    update_interval: 60s
+    id: esp_energymonitor_rssi
+
+  - platform: pzemac
+    current:
+      name: ${board_name}_Current
+      accuracy_decimals: 1
+      device_class: current
+      id: id_current
+    voltage:
+      name: ${board_name}_Voltage
+      accuracy_decimals: 1
+      device_class: voltage
+      id: id_voltage
+    energy:
+      name: ${board_name}_Energy
+      accuracy_decimals: 3
+      unit_of_measurement: 'kWh'
+      device_class: energy
+      state_class: total_increasing
+      filters:
+        - offset: 1 #776447
+        - multiply: 0.001
+      id: id_energy
+    power:
+      name: ${board_name}_Power
+      accuracy_decimals: 0
+      id: id_power
+      unit_of_measurement: W
+      device_class: power
+    frequency:
+      name: ${board_name}_Frequency
+      accuracy_decimals: 0
+      id: if_frequency
+    power_factor:
+      name: ${board_name}_Power Factor
+      accuracy_decimals: 2
+      unit_of_measurement: ''
+      icon: mdi:cosine-wave
+      id: id_power_factor
+      device_class: power_factor
+    update_interval: 5s
+
+
+  - platform: template
+    name: ${board_name}_Power_kW
+    lambda: return (id(id_power).state)*0.001;
+    id: id_power_kw
+    accuracy_decimals: 3
+    update_interval: 5s
+    unit_of_measurement: 'kW'
+    icon: mdi:lightning-bolt-outline
+
+  - platform: template
+    name: ${board_name}_Power_Night
+    id: id_power_night
+    icon: mdi:speedometer
+    lambda: |- 
+      auto id_loc_time = id(id_time).now();
+      if ((id(id_power).state >= 0) and id_loc_time.is_valid()) {
+        if ( (id(id_time).now().hour >= 23) || (id(id_time).now().hour >= 0 && id(id_time).now().hour < 7) ) {
+          return id(id_power).state;
+        } else {
+          return 0.0;
+        }
+      } else {
+        return 0.0;
+      } 
+    accuracy_decimals: 1
+    update_interval: 5s
+    unit_of_measurement: 'W'
+    
+  - platform: template
+    name: ${board_name}_Power_Day
+    id: id_power_day
+    icon: mdi:speedometer
+    lambda: |-
+      auto id_loc_time = id(id_time).now();
+      if ((id(id_power).state >= 0) and id_loc_time.is_valid()) {
+        if ( (id(id_time).now().hour >= 7 && id(id_time).now().hour < 23) ) {
+          return id(id_power).state;
+        } else {
+          return 0.0;
+        }
+      } else {
+        return 0.0;
+      }         
+    accuracy_decimals: 1
+    update_interval: 5s
+    unit_of_measurement: 'W'
+
+  - platform: integration
+    name: ${board_name}_Energy_Monthly
+    id: id_energy_monthly
+    sensor: id_power
+    time_unit: h
+    filters:
+      - multiply: 0.001
+    unit_of_measurement: 'kWh'
+    accuracy_decimals: 3
+    restore: true
+    state_class: total_increasing
+
+  - platform: integration
+    name: ${board_name}_Energy_Monthly_Day
+    id: id_energy_monthly_day
+    sensor: id_power_day
+    time_unit: h
+    filters:
+      - multiply: 0.001
+    unit_of_measurement: 'kWh'
+    accuracy_decimals: 3
+    restore: true
+    state_class: total_increasing
+
+  - platform: integration
+    name: ${board_name}_Energy_Monthly_Night
+    id: id_energy_monthly_night
+    sensor: id_power_night
+    time_unit: h
+    filters:
+      - multiply: 0.001
+    unit_of_measurement: 'kWh'
+    accuracy_decimals: 3
+    restore: true
+    state_class: total_increasing
+
+  - platform: total_daily_energy
+    name: ${board_name}_Energy_Daily
+    icon: mdi:gauge
+    id: id_energy_daily
+    power_id: id_power
+    filters:
+      - multiply: 0.001
+    unit_of_measurement: 'kWh'
+    accuracy_decimals: 3            
+
+  - platform: total_daily_energy
+    name: ${board_name}_Energy_Daily_Night
+    icon: mdi:gauge
+    id: id_energy_daily_night
+    power_id: id_power_night
+    filters:
+      - multiply: 0.001
+    unit_of_measurement: 'kWh'
+    accuracy_decimals: 3
+
+  - platform: total_daily_energy
+    name: ${board_name}_Energy_Daily_Day
+    icon: mdi:gauge
+    id: id_energy_daily_day
+    power_id: id_power_day
+    filters:
+      - multiply: 0.001
+    unit_of_measurement: 'kWh'
+    accuracy_decimals: 3
+
+switch:
+  - platform: restart
+    name: ${board_name}_Restart
+    on_turn_off: 
+      - homeassistant.service:
+          service: notify.tgm_administration
+          data:
+            message: "ESP Energy Monitor Restarted"
+
+  - platform: template
+    name: ${board_name}_Energy_Reset_Monthly_Night
+    turn_on_action: 
+      - sensor.integration.reset: id_energy_monthly_night     
+
+  - platform: template
+    name: ${board_name}_Energy_Reset_Monthly_Day
+    turn_on_action: 
+      - sensor.integration.reset: id_energy_monthly_day
+
+  - platform: template #
+    name: ${board_name}_Energy_Reset_Monthly
+    turn_on_action: 
+      - sensor.integration.reset: id_energy_monthly
+
+  - platform: uart
+    name: ${board_name}_Energy_Reset_UART
+    data: [0x01, 0x42, 0x80, 0x11]
+    uart_id: pzem_uart
+
+  - platform: template
+    name: ${board_name}_Energy_Reset_All
+    turn_on_action: 
+      - sensor.integration.reset: id_energy_monthly
+      - delay: 1s
+      - sensor.integration.reset: id_energy_monthly_day
+      - delay: 1s
+      - sensor.integration.reset: id_energy_monthly_night
+      - homeassistant.service:
+          service: notify.tgm_administration
+          data:
+            message: "ESP Energy Monitor - Monthly Data Reset Done!"
+    
+    
+time:
+  - platform: homeassistant
+    id: id_time

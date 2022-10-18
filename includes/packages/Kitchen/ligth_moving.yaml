@@ -1,0 +1,82 @@
+light_moving:
+
+    template:
+     
+      - binary_sensor:
+
+          - name: kitchen_light
+            state: >
+              {{ is_state('binary_sensor.kitchen_occupancy', 'off')  
+                 and is_state('light.light_kitchen_backlight', 'on')
+              }}
+            delay_on: 00:00:05
+
+    automation:
+
+      - id: Управление подсветкой толешницы по датчику движения
+        alias: kitchen_light_moving_control_1
+        initial_state: false
+        trigger:
+    # Датчик движения
+        - platform: state
+          entity_id: binary_sensor.kitchen_occupancy
+        action:
+            - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: binary_sensor.kitchen_occupancy
+                    state: 'on'
+                  - condition: state
+                    entity_id: light.light_kitchen_backlight
+                    state: 'off'
+                sequence:
+                  - service: light.turn_on
+                    entity_id:
+                      - light.light_kitchen_backlight
+                    data_template:
+                      brightness_pct: 100
+              - conditions:
+                  - condition: state
+                    entity_id: binary_sensor.kitchen_occupancy
+                    state: 'off'
+                  - condition: state
+                    entity_id: light.light_kitchen_backlight
+                    state: 'on'
+                sequence:
+                  - service: light.turn_off
+                    entity_id:
+                      - light.light_kitchen_backlight 
+    
+      - id: Управление подсветкой толешницы по датчику движения и по сенсору
+        alias: kitchen_light_moving_control_2
+        initial_state: false
+        trigger:
+    # Датчик движения
+        - platform: state
+          entity_id: binary_sensor.kitchen_occupancy
+    # Сенсор шаблона
+        - platform: state
+          entity_id: binary_sensor.kitchen_light
+        action:
+            - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: binary_sensor.kitchen_occupancy
+                    state: 'on'
+                  - condition: state
+                    entity_id: light.light_kitchen_backlight
+                    state: 'off'
+                sequence:
+                  - service: light.turn_on
+                    entity_id:
+                      - light.light_kitchen_backlight
+                    data_template:
+                      brightness_pct: 100
+              - conditions:
+                  - condition: state
+                    entity_id: binary_sensor.kitchen_light
+                    state: 'on'
+                sequence:
+                  - service: light.turn_off
+                    entity_id:
+                      - light.light_kitchen_backlight

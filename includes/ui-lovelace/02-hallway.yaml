@@ -1,0 +1,57 @@
+title: Приходая
+icon: mdi:hanger
+cards:
+  - type: vertical-stack
+    cards:
+    - type: horizontal-stack # горизонтальня сортировка
+      cards:            
+        - type: entities
+          show_header_toggle: false
+          title: Коридор
+          entities:      
+            
+            - entity: group.hall_ligths
+              name: Весь свет
+              state_color: true
+            
+            - type: divider
+              style:
+                height: 1px
+                width: 80%
+                margin-left: auto
+                margin-right: auto
+                background: '#62717b'
+
+
+            - entity: switch.switch_corridor_ligth_top_left
+              name: Основной свет
+              state_color: true
+              icon: mdi:track-light      
+            - entity: switch.switch_corridor_ligth_top_right
+              name: Над дверью
+              state_color: true
+              icon: mdi:coach-lamp                  
+            - entity: light.corridor_led
+              state_color: true
+
+  - type: vertical-stack
+    cards:
+    - type: horizontal-stack # горизонтальня сортировка
+      cards:            
+        - type: entities
+          show_header_toggle: false
+          title: Настройки света и подсветки
+          entities:     
+                      
+            - entity: input_boolean.auto_corridor_led
+              state_color: true
+            - entity: input_select.corridor_led_pct_evening
+            - entity: input_select.corridor_led_pct_night  
+            - entity: sensor.corridor_led_brightness
+            - entity: input_select.corridor_led_time
+              state_color: true
+            - entity: binary_sensor.corridor_occupancy
+              name: Движение в коридоре
+              state_color: true
+
+            

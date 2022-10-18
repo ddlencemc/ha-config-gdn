@@ -1,0 +1,110 @@
+substitutions:
+  board_name: Esp-Kitchen-Bottom-Light
+
+esphome:
+  name: esp-kitchen-bottom-light
+
+esp8266:
+  board: d1_mini
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: !secret api_password
+
+ota:
+  password: !secret ota_password
+
+web_server:
+  port: 8081
+
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  manual_ip:
+    static_ip: !secret ip_kitchen_bottom_light
+    gateway: 192.168.0.1
+    subnet: 255.255.255.0
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: ${board_name}
+    password: !secret ap_password
+
+
+text_sensor:
+  - platform: template
+    name: ${board_name}_Uptime
+    lambda: |-
+        int seconds = round(id(uptime_sensor).raw_state);
+        int days = seconds / (24 * 3600);
+        seconds = seconds % (24 * 3600);
+        int hours = seconds / 3600;
+        seconds = seconds % 3600;
+        int minutes = seconds /  60;
+        seconds = seconds % 60;
+        return (
+          (days ? to_string(days) + "d " : "00d ") +
+          (hours ? to_string(hours) + "h " : "00h ") +
+          (minutes ? to_string(minutes) + "m " : "00m ") +
+          (to_string(seconds) + "s")
+        );
+    icon: mdi:clock-start
+    update_interval: 15s
+  
+  - platform: wifi_info
+    ip_address:
+      name: ${board_name}_IP
+    ssid:
+      name: ${board_name}_SSID
+    bssid:
+      name: ${board_name}_BSSID
+    mac_address:
+      name: ${board_name}_Mac
+    scan_results:
+      name: ${board_name}_Latest_Scan_Results
+
+  - platform: version
+    name: ${board_name}_ESPHome_Version
+    hide_timestamp: true    
+    
+sensor:
+  - platform: uptime
+    name: ${board_name}_Uptime_s
+    id: uptime_sensor
+    update_interval: 15s
+
+  - platform: wifi_signal
+    name: ${board_name} WiFi RSSI
+    update_interval: 60s
+    id: esp_kitchen_bottom_light_rssi
+
+button:
+  - platform: restart
+    name: ${board_name}_Restart
+    
+switch:
+  - platform: gpio
+    pin: 2 #D4
+    inverted: true
+    name: switch_kitchen_bottom_light
+    id: switch_kitchen_bottom_light
+    restore_mode: ALWAYS_OFF 
+    
+  - platform: template
+    name: Test Switch
+    turn_on_action:
+      - homeassistant.service:
+          service: notify.tgm_administration
+          data:
+            message: "ESP Energy Monitor - Monthly Data Reset Done!"
+
+  - platform: restart
+    name: ${board_name}_Restart
+    on_turn_off: 
+      - homeassistant.service:
+          service: notify.tgm_administration
+          data:
+            message: "ESP Kitchen Bottom light Restarted"

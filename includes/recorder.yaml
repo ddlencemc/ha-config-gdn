@@ -1,0 +1,15 @@
+db_url: mysql://hass:hass@core-mariadb/homeassistant?charset=utf8
+#purge_keep_days: 5
+#include:
+#    domains:
+#      - switch
+#      - light
+#      - systemmonitor
+#    entities:
+##Объем БД
+#      - sensor.maria_db_size
+##Сенсоры температуры и влажности
+#      - sensor.outside_temperature
+#Сенсоры мощности
+
+#exclude:

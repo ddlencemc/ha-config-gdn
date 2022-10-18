@@ -1,0 +1,42 @@
+  - platform: mqtt
+    name: ESPWS Outside Temperature
+    state_topic: "espWeatherStation/out_temperature"
+    unit_of_measurement: "°C"
+    value_template: "{{ value | round(1) }}"
+
+  - platform: mqtt
+    name: ESPWS Inside Temperature
+    state_topic: "espWeatherStation/in_temperature"
+    unit_of_measurement: "°C"
+    value_template: "{{ value | round(1) }}"
+
+  - platform: mqtt
+    name: ESPWS Outside Humidity
+    state_topic: "espWeatherStation/out_humidity"
+    unit_of_measurement: "%"
+    value_template: "{{ value | round(1) }}"
+
+#  - platform: mqtt
+#    name: ESPWS Inside Humidity
+#    state_topic: "espWeatherStation/in_humidity"
+#    unit_of_measurement: "%"
+#    value_template: "{{ value | round(1) }}"
+
+  - platform: mqtt
+    name: ESPWS Pressure
+    state_topic: "espWeatherStation/in_pressure"
+    unit_of_measurement: "mmHg"
+    value_template: "{{ value | round(1) }}"
+
+  - platform: mqtt
+    name: ESPWS RSSI
+    state_topic: "espWeatherStation/rssi"
+    unit_of_measurement: "dbm"
+    value_template: "{{ value | round(1) }}"
+
+  - platform: mqtt
+    name: ESPWS Outside Dev Point
+    state_topic: "espWeatherStation/out_dewPoint"
+    unit_of_measurement: "°C"
+    value_template: "{{ value | round(1) }}"
+

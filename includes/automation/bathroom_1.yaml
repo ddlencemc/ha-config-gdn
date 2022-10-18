@@ -1,0 +1,46 @@
+- alias: bathroom1_fan_max_on
+  id: bathroom1_fan_max_on
+  initial_state: false
+  trigger:
+   - platform: state
+     entity_id: switch.switch_bathroom_1_right
+     to: 'on'
+   - platform: state
+     entity_id: switch.switch_bathroom_1_left
+     to: 'on'
+  action:
+   - service: switch.turn_on
+     entity_id: switch.fan_bathroom_1_l2  
+     
+- alias: bathroom1_fan_max_off
+  id: bathroom1_fan_max_off
+  initial_state: false
+  trigger:
+   - platform: state
+     entity_id: switch.switch_bathroom_1_right
+     to: 'off'
+  action:
+   - service: switch.turn_off
+     entity_id: switch.fan_bathroom_1_l2 
+
+#- alias: bathroom1_fan_max_on
+#  id: bathroom1_fan_max_on
+#  initial_state: true
+#  trigger:
+#   - platform: state
+#     entity_id: switch.switch_bathroom_1_right
+#     to: 'on'
+#  action:
+#   - service: switch.turn_on
+#     entity_id: switch.fan_bathroom_1_l2     
+
+#- alias: bathroom1_fan_max_off
+#  id: bathroom1_fan_max_off
+#  initial_state: true
+#  trigger:
+#   - platform: state
+#     entity_id: switch.switch_bathroom_1_right
+#     to: 'off'
+#  action:
+#   - service: switch.turn_off
+#     entity_id: switch.fan_bathroom_1_l2 

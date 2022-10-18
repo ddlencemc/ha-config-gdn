@@ -1,0 +1,42 @@
+title: Спальня
+icon: mdi:bed-king
+cards:
+  - type: vertical-stack
+    cards:
+    # - type: horizontal-stack # горизонтальня сортировка
+    #   cards:
+    - type: entities
+      entities:
+      - type: custom:button-card
+        entity: cover.rollet_bedroom #input_button.button_bedroom_rollet
+        name: Жалюзи
+        tap_action:
+          action: call-service
+          service: input_button.press
+          service_data:
+            entity_id: input_button.button_bedroom_rollet
+        state:
+          - operator: template
+            value: >
+              [[[ return states['binary_sensor.rollet_val_state_onoff'].state === 'on' ]]]
+            icon: mdi:blinds-open
+            color: rgb(253, 216, 53)
+          - operator: default
+            icon: mdi:blinds       
+            color: rgb(68, 115, 158)
+        show_state: true
+        show_last_changed: true
+        show_name: true
+    - type: entities
+      entities:
+      - type: buttons
+        entities:
+        - type: custom:button-card
+          entity: cover.rollet_bedroom
+          name: Приоткрыть 
+          icon: mdi:gamepad-circle
+          color: rgb(28, 128, 199)
+          tap_action: 
+            action: call-service
+            service: cover.set_cover_position
+            service_data: {"entity_id": "cover.rollet_bedroom", "position": 50}

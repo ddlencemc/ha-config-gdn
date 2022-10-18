@@ -1,0 +1,165 @@
+title: Элетросеть
+icon: mdi:transmission-tower
+cards:
+          
+
+############################ Колонка 1 ############################
+  - type: vertical-stack
+    cards:
+
+      - type: custom:stack-in-card
+        mode: vertical
+        cards:
+    
+          - type: markdown
+            style: |
+                  ha-card {
+                    color: #00BFFF;
+                    font-weight: bold;
+                    font-size: 14px;
+                  }          
+            content: >
+                **Текущая сеть**
+
+################# Текущее потребление #################
+
+          - type: entities
+            # style: |
+            #       ha-card {
+            #         color: #00BFFF;
+            #         --paper-item-icon-color: #00BFFF;
+            #         --iron-icon-stroke-color: #FFFFE0;
+            #         font-weight: bold;
+            #         font-size: 12px;
+            #       }  
+            style: |
+                  ha-card {
+                    color: #00BFFF;
+                    --paper-item-icon-color: #FFA500;
+                    --iron-icon-stroke-color: #FFFFE0;
+                    font-size: 12px;
+                  }                 
+            show_header_toggle: false
+            entities:
+            - entity: sensor.esp_energy_monitor_power_factor 
+              icon: mdi:flash
+              type: custom:multiple-entity-row
+              name: Сеть
+              state_header: Коэффицент 
+              entities:
+                - entity: sensor.esp_energy_monitor_voltage
+                  name: Вольт
+                - entity: sensor.esp_energy_monitor_frequency
+                  name: Частота
+
+          - type: entities
+            style: |
+                  ha-card {
+                    color: #00BFFF;
+                    --paper-item-icon-color: #FFA500;
+                    --iron-icon-stroke-color: #FFFFE0;
+                    font-size: 12px;
+                  }                
+            show_header_toggle: false
+            entities:
+            - entity: sensor.esp_energy_monitor_power_kw 
+              icon: mdi:flash
+              type: custom:multiple-entity-row
+              name: Текущая нагрузка
+              state_header: кВатт 
+              entities:
+                - entity: sensor.esp_energy_monitor_current
+                  name: Ток
+                - entity: sensor.esp_energy_monitor_power
+                  name: Ватт
+                # - entity: sensor.esp_energy_monitor_power_day
+                #   name: За день
+                # - entity: sensor.esp_energy_monitor_power_night
+                #   name: За ночь
+
+############################ Колонка 2 ############################
+  - type: vertical-stack
+    cards:
+
+      - type: custom:stack-in-card
+        mode: vertical
+        cards:
+    
+          - type: markdown
+            style: |
+                  ha-card {
+                    color: #00BFFF;
+                    --paper-item-icon-color: #FFA500;
+                    --iron-icon-stroke-color: #FFFFE0;
+                    font-size: 14px;
+                  }         
+            content: >
+                **Потребление**
+
+################# Потребление #################
+
+          - type: entities
+            style: |
+                  ha-card {
+                    color: #00BFFF;
+                    --paper-item-icon-color: #FFA500;
+                    --iron-icon-stroke-color: #FFFFE0;
+                    font-size: 12px;
+                  }                
+            show_header_toggle: false
+            entities:
+            - entity: sensor.esp_energy_monitor_energy_daily
+              icon: mdi:gauge
+              type: custom:multiple-entity-row
+              name: Текущие сутки (кВатт/ч)
+              state_header: За сутки
+              entities:
+                - entity: sensor.esp_energy_monitor_energy_daily_day
+                  name: За день
+                - entity: sensor.esp_energy_monitor_energy_daily_night
+                  name: За ночь
+          - type: entities
+            style: |
+                  ha-card {
+                    color: #00BFFF;
+                    --paper-item-icon-color: #FFA500;
+                    --iron-icon-stroke-color: #FFFFE0;
+                    font-size: 12px;
+                  }                 
+            show_header_toggle: false
+            entities:
+            - entity: sensor.esp_energy_monitor_energy_monthly
+              icon: mdi:gauge
+              type: custom:multiple-entity-row
+              name: Текущий месяц (кВатт/ч)
+              state_header: За месяц
+              entities:
+                - entity: sensor.esp_energy_monitor_energy_monthly_day
+                  name: За день
+                - entity: sensor.esp_energy_monitor_energy_monthly_night
+                  name: За ночь
+            - type: divider
+              style:
+                height: 1px
+                width: 80%
+                margin-left: auto
+                margin-right: auto
+                background: '#62717b'                  
+          - type: entities
+            style: |
+                  ha-card {
+                    color: #00BFFF;
+                    --paper-item-icon-color: #FFA500;
+                    --iron-icon-stroke-color: #FFFFE0;
+                    font-size: 12px;
+                  }                  
+            show_header_toggle: false
+            entities:
+            - entity: sensor.esp_energy_monitor_energy
+              icon: mdi:transmission-tower-export
+              type: custom:multiple-entity-row
+              name: Общее потребление (кВатт/ч)
+              state_header: За все время
+              entities:
+                - entity: sensor.esp_energy_monitor_energy_cost
+                  name: PLN

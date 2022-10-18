@@ -1,0 +1,100 @@
+homeassistant:
+  name: My Smart Home
+  latitude: !secret latitude_coord
+  longitude: !secret longitude_coord
+  elevation: 7
+  unit_system: metric
+  time_zone: Europe/Warsaw
+  customize: !include customize.yaml
+  packages: !include_dir_merge_named includes/packages
+  currency: PLN
+
+
+  
+frontend:
+  themes: !include_dir_merge_named themes
+
+
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+lovelace:
+  mode: yaml
+  resources:
+    - url: /hacsfiles/button-card/button-card.js
+      type: module
+    - url: /hacsfiles/lovelace-auto-entities/auto-entities.js
+      type: module
+    - url: /hacsfiles/scheduler-card/scheduler-card.js
+      type: module
+    - url: /hacsfiles/lovelace-card-mod/card-mod.js
+      type: module
+    - url: /hacsfiles/lovelace-mushroom/mushroom.js
+      type: module
+    - url: /hacsfiles/stack-in-card/stack-in-card.js
+      type: module
+    - url: /hacsfiles/lovelace-multiple-entity-row/multiple-entity-row.js
+      type: module      
+    - url: /hacsfiles/vertical-stack-in-card/vertical-stack-in-card.js
+      type: module
+    - url: /hacsfiles/battery-state-card/battery-state-card.js
+      type: module
+                
+                                                 
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+#Блок для внешниз файлов
+group: !include includes/groups.yaml
+automation: !include_dir_merge_list includes/automation
+#script: !include includes/scripts.yaml
+script: !include_dir_merge_named includes/scripts.yaml
+scene: !include includes/scenes.yaml
+recorder: !include includes/recorder.yaml
+sensor: !include_dir_merge_list includes/sensor
+binary_sensor: !include_dir_merge_list includes/bin_sensor
+#switch: !include_dir_merge_list includes/switch
+#timer: !include includes/timer.yaml
+#Блок для внешниз файлов <<EOL
+
+# person:
+#   - name: Ivan
+#     id: ivan
+#    user_id: c5e65a4f6f874730828ea2e7ff159adb
+    # device_trackers:
+    #   - device_tracker.mi_band_2
+
+telegram_bot:
+  - platform: polling
+    api_key: !secret tgm_bot_api
+    allowed_chat_ids:
+      - !secret tgm_user_id_1
+      - !secret tgm_user_id_2
+      - !secret tgm_user_id_3
+
+notify:
+  - name: tgm_administration
+    platform: telegram
+    chat_id: !secret tgm_user_id_1
+
+  - name: tgm_katya
+    platform: telegram
+    chat_id: !secret tgm_user_id_2
+    
+  - name: tgm_valeriya
+    platform: telegram
+    chat_id: !secret tgm_user_id_3
+
+panel_custom:
+  - name: server_state
+    sidebar_title: 'Система'
+    sidebar_icon: mdi:server
+    js_url: /api/hassio/app/entrypoint.js
+    url_path: 'hassio/system'
+    embed_iframe: true
+    require_admin: true
+    config:
+      ingress: core_configurator 

@@ -1,0 +1,58 @@
+- alias: bedroom_light_top_toggle
+  id: bedroom_light_top_toggle
+  initial_state: true
+  trigger:
+   - platform: state
+     entity_id: sensor.pilot_bedroom_action
+     to: '2_single'
+  action:
+   - service: switch.toggle
+     entity_id: switch.switch_bedroom_light_top
+     
+- alias: bedroom_light_wall_left_toggle
+  id: bedroom_light_wall_left_toggle
+  initial_state: true
+  trigger:
+   - platform: state
+     entity_id: sensor.pilot_bedroom_action
+     to: '1_single'
+  action:
+   - service: switch.toggle
+     entity_id: switch.switch_bedroom_light_wall_left
+     
+- alias: bedroom_light_wall_right_toggle
+  id: bedroom_light_wall_right_toggle
+  initial_state: true
+  trigger:
+   - platform: state
+     entity_id: sensor.pilot_bedroom_action
+     to: '3_single'
+  action:
+   - service: switch.toggle
+     entity_id: switch.switch_bedroom_light_wall_right
+     
+
+
+
+# - alias: bedroom_rollet_open
+#   id: bedroom_rollet_open
+#   initial_state: true
+#   trigger:
+#    - platform: state
+#      entity_id: sensor.pilot_bedroom_action
+#      to: '1_double'
+#   action:
+#    - service: cover.open_cover
+#      entity_id: cover.rollet_bedroom    
+     
+# - alias: bedroom_rollet_close
+#   id: bedroom_rollet_close
+#   initial_state: true
+#   trigger:
+#    - platform: state
+#      entity_id: sensor.pilot_bedroom_action
+#      to: '2_double'
+#   action:
+#    - service: cover.close_cover
+#      entity_id: cover.rollet_bedroom
+     

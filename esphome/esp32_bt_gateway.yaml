@@ -1,0 +1,174 @@
+substitutions:
+  board_name: Esp32-BT-Gateway
+
+esphome:
+  name: esp32_bt_gateway
+  platform: ESP32
+  board: esp-wrover-kit
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  manual_ip:
+    static_ip: !secret ip_bt_gateway
+    gateway: 192.168.0.1
+    subnet: 255.255.255.0
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Esp32 Bt Gateway"
+    password: !secret ap_password
+
+captive_portal:
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: !secret api_password
+
+ota:
+  password: !secret ota_password
+
+web_server:
+  port: 8081
+  
+esp32_ble_tracker:
+
+binary_sensor:
+  - platform: status
+    name: ${board_name}_Status
+    id: id_status
+
+  - platform: ble_presence
+    mac_address: !secret user1_tracker
+    name: !secret user1_name
+    device_class: presence
+    
+  - platform: ble_presence
+    mac_address: !secret user2_tracker
+    name: !secret user2_name
+    device_class: presence   
+
+  - platform: ble_presence
+    mac_address: !secret user1_tracker
+    name: !secret user3_name
+    device_class: presence   
+# ble_client:
+#   - mac_address: "EC::98::3D:BE"
+#     id: ble_mi_band_2  
+
+sensor:
+  - platform: ble_rssi
+    mac_address: !secret user1_tracker
+    name: !secret user1_name
+
+  - platform: ble_rssi
+    mac_address: !secret user2_tracker
+    name: !secret user2_name
+
+  - platform: ble_rssi
+    mac_address: !secret user3_tracker
+    name: !secret user3_name
+
+
+  - platform: xiaomi_lywsd02
+    mac_address: "E7:2E:00:13:2C:D1"
+    temperature:
+      name: "LYWSD02 Temperature"
+    humidity:
+      name: "LYWSD02 Humidity"
+    battery_level:
+      name: "LYWSD02 Battery Level"
+      
+
+  - platform: uptime
+    name: ${board_name}_Uptime_s
+    id: uptime_sensor
+    update_interval: 15s
+
+  - platform: wifi_signal
+    name: ${board_name} WiFi RSSI
+    update_interval: 60s
+    id: esp32_bt_gateway_rssi
+
+text_sensor:
+  - platform: template
+    name: ${board_name}_Uptime
+    lambda: |-
+        int seconds = round(id(uptime_sensor).raw_state);
+        int days = seconds / (24 * 3600);
+        seconds = seconds % (24 * 3600);
+        int hours = seconds / 3600;
+        seconds = seconds % 3600;
+        int minutes = seconds /  60;
+        seconds = seconds % 60;
+        return (
+          (days ? to_string(days) + "d " : "00d ") +
+          (hours ? to_string(hours) + "h " : "00h ") +
+          (minutes ? to_string(minutes) + "m " : "00m ") +
+          (to_string(seconds) + "s")
+        );
+    icon: mdi:clock-start
+    update_interval: 15s
+  
+  - platform: wifi_info
+    ip_address:
+      name: ${board_name}_IP
+    ssid:
+      name: ${board_name}_SSID
+    bssid:
+      name: ${board_name}_BSSID
+    mac_address:
+      name: ${board_name}_Mac
+    scan_results:
+      name: ${board_name}_Latest_Scan_Results
+
+  - platform: version
+    name: ${board_name}_ESPHome_Version
+    hide_timestamp: true
+#
+#  - platform: xiaomi_miscale
+#    mac_address: 'C8:B2:1E:C2:C9:D3'
+#    weight:
+#      name: "Hoffen Scale Weight"
+#      id: weight_miscale
+#      on_value:
+#        then:
+#          - lambda: |-
+#              if (id(weight_miscale).state >= 80 && id(weight_miscale).state <= 95) {
+#                return id(weight_user1).publish_state(x);}
+#  - platform: template
+#    name: Weight sds
+#    id: weight_user1
+#    unit_of_measurement: 'kg'
+#    icon: mdi:weight-kilogram
+#    accuracy_decimals: 2
+ 
+output:
+  - platform: ledc
+    pin: GPIO19
+    id: corridor_led
+
+    
+light:
+  - platform: monochromatic
+    gamma_correct: 1.0
+    output: corridor_led
+    name: "Corridor Led"
+
+
+switch:
+  - platform: restart
+    name: ${board_name}_Restart
+    on_turn_off: 
+      - homeassistant.service:
+          service: notify.tgm_administration
+          data:
+            message: "ESP32 BT Gateway Restarted"
+
+time:
+  - platform: homeassistant
+    id: id_time
+ 
