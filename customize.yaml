@@ -37,7 +37,7 @@ sensor.espws_rssi:
 
 binary_sensor.corridor_occupancy:
   friendly_name: Движение в коридоре
-  device_class: occupancy  
+  device_class: motion  
 
 #Террариум сенсоры и выключатели
 sensor.terrarium_temp_humidity_temperature:

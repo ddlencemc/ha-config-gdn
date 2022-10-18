@@ -4,6 +4,7 @@ telegramm:
     - platform: template
       sensors:
 
+
         unavailable_now_light:
           friendly_name: "Всего недоступных светильников - "
           # entity_id:
