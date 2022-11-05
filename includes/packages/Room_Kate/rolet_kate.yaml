@@ -40,7 +40,7 @@ rollet_kate_bedroom:
 
     automation:
 
-      - id: Автоматическое управление роллетой у Кати
+      - id: Управление роллетой у Кати
         alias: auto_kateroom_rollet
         initial_state: true
         trigger:
@@ -65,9 +65,7 @@ rollet_kate_bedroom:
 
               
 
-
-
-      - id: kateroom_rollet_tuggle 
+      - id: Пульт для роллеты у Кати 
         alias: kateroom_rollet_tuggle
         initial_state: true
         trigger:
@@ -90,3 +88,55 @@ rollet_kate_bedroom:
                 sequence:
                   - service: cover.open_cover
                     entity_id: cover.rollet_kateroom
+
+      - id: Автоматическое открытие роллеты
+        alias: kateroom_rollet_auto_open
+        initial_state: true
+        trigger:
+        - platform: time
+          at: '09:00:00'
+        condition:
+        - condition: state
+          entity_id: binary_sensor.kate_amazfit_gts_3
+          state: "off"
+          for: '00:25:00'
+        - condition: time
+          after: '08:59'
+          before: '12:30'
+        - condition: state
+          entity_id: binary_sensor.workday_sensor
+          state: "on"
+        action:
+          - service: cover.open_cover
+            entity_id: cover.rollet_kateroom
+        mode: single
+
+      - id: Автоматическое заткрытие роллеты
+        alias: kateroom_rollet_auto_close
+        initial_state: false
+        trigger:
+        - platform: state
+          entity_id: binary_sensor.kate_amazfit_gts_3
+          to: "on"
+          from: "off"
+          for: '00:05:00'
+        condition:
+        - condition: time
+          after: '13:00'
+          before: '16:30'
+          weekday:
+          - mon
+          - tue
+          - wed
+          - thu
+          - fri
+        - condition: state
+          entity_id: binary_sensor.rollet_kate_state_onoff
+          state: 'on'
+        action:
+        - service: cover.set_cover_position
+          target:
+            entity_id: cover.rollet_kateroom
+          data:
+            position: 30
+        #mode: single

@@ -1,0 +1,51 @@
+title: Кабинет
+icon: mdi:chair-rolling
+cards:
+  - type: vertical-stack
+    cards:
+    - type: horizontal-stack
+      cards:
+      - type: entities
+        show_header_toggle: false
+        title: Кабинет
+        entities:
+          - entity: binary_sensor.mi_band_2
+            name: Иван
+            state_color: true
+            secondary_info: last-changed
+          # - type: divider
+          #   style:
+          #     height: 1px
+          #     width: 80%
+          #     margin-left: auto
+          #     margin-right: auto
+          #     background: '#62717b' 
+    - type: horizontal-stack
+      cards:    
+      - type: entities
+        show_header_toggle: false
+        title: 
+        entities:
+          - entity: group.cabinet_lights
+            name: Весь свет
+            state_color: true
+          - type: divider
+            style:
+              height: 1px
+              width: 80%
+              margin-left: auto
+              margin-right: auto
+              background: '#62717b'     
+
+          - entity: switch.switch_kabinet_ligth_top_right
+            state_color: true
+            #name: Трекер над кроватью
+            secondary_info: last-changed      
+
+          - entity: switch.switch_kabinet_ligth_top_left   
+            state_color: true
+            #name: Основной свет
+            secondary_info: last-changed
+          
+
+            

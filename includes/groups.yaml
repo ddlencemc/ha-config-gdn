@@ -51,6 +51,7 @@ kateroom_lights:
   entities:
     - switch.switch_kateroom_ligth_top_left   
     - switch.switch_kateroom_ligth_top_right 
+    - switch.switch_kate_nightlight
 
 bath1_lights:
   name: Большая ванная

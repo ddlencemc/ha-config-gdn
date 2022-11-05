@@ -1,4 +1,92 @@
 title: Катина комната
 icon: mdi:bed-queen
 cards:
-  
+  - type: vertical-stack
+    cards:
+    - type: horizontal-stack
+      cards:
+      - type: entities
+        show_header_toggle: false
+        title: Катина комната
+        entities:
+          - entity: binary_sensor.kate_amazfit_gts_3
+            name: Катя
+            state_color: true
+            secondary_info: last-changed
+          # - type: divider
+          #   style:
+          #     height: 1px
+          #     width: 80%
+          #     margin-left: auto
+          #     margin-right: auto
+          #     background: '#62717b'
+    - type: horizontal-stack
+      cards:    
+      - type: entities
+        show_header_toggle: false
+        title: 
+        entities:
+          - entity: group.kateroom_lights
+            name: Весь свет
+            state_color: true
+          - type: divider
+            style:
+              height: 1px
+              width: 80%
+              margin-left: auto
+              margin-right: auto
+              background: '#62717b'     
+              
+          - entity: switch.switch_kateroom_ligth_top_left   
+            state_color: true
+            name: Трекер над столом
+            secondary_info: last-changed
+          
+          - entity: switch.switch_kateroom_ligth_top_right
+            state_color: true
+            name: Трекер над кроватью
+            secondary_info: last-changed
+
+          - entity: switch.switch_kate_nightlight
+            state_color: true     
+            name: Ночник
+            secondary_info: last-changed
+
+  - type: vertical-stack
+    cards:
+    - type: entities
+      show_header_toggle: false
+      title: Жалюзи
+      entities:
+      - entity: sensor.rollet_kate_state #cover.rollet_kateroom
+        #attribute: current_position
+        
+        type: custom:multiple-entity-row
+        name: Статус
+        state_header: Состояние 
+        secondary_info: last-changed
+        state_color: true 
+        entities:
+          - entity: cover.rollet_kateroom #sensor.rollet_kate_state
+            name: Положение
+            attribute: current_position
+            unit: '%'
+          # - entity: cover.rollet_kateroom #sensor.rollet_kate_state
+          #   name: Зарядка
+          #   attribute: charging_status
+          #   #unit: '%'
+      - entity: cover.rollet_kateroom
+        state_color: true 
+        secondary_info: last-changed
+        icon: mdi:camera-control
+        name: Управление
+      - entity: sensor.rollet_kateroom_battery
+        name: Аккумулятор
+
+    - type: entities
+      show_header_toggle: false
+      title: Пульт
+      entities:
+      - entity: sensor.pilot_kate_battery
+        name: Батарейка
+            

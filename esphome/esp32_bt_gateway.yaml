@@ -49,12 +49,12 @@ binary_sensor:
   - platform: ble_presence
     mac_address: !secret user2_tracker
     name: !secret user2_name
-    device_class: presence   
+    device_class: presence
 
   - platform: ble_presence
-    mac_address: !secret user1_tracker
+    mac_address: !secret user3_tracker
     name: !secret user3_name
-    device_class: presence   
+    device_class: presence
 # ble_client:
 #   - mac_address: "EC::98::3D:BE"
 #     id: ble_mi_band_2  

@@ -13,7 +13,7 @@ bathroom_ventilation:
       hum_high_on:
         name: Влажность для включения вытяжки
         min: 60
-        max: 90
+        max: 95
         step: 1
         unit_of_measurement: '%' 
         
@@ -40,6 +40,9 @@ bathroom_ventilation:
           - 00:08:00
           - 00:09:00
           - 00:10:00
+          - 00:15:00
+          - 00:20:00
+          - 00:30:00
 
       vent_min_off_time:
         name: Время для выключения минимальной вытяжки
@@ -376,8 +379,8 @@ bathroom_ventilation:
               entity_id: binary_sensor.sensor_light_batroom_1_on
               state: 'on'
         action:
-          # - service: input_boolean.toggle
-          #   entity_id: input_boolean.auto_vent_max 
+          - service: input_boolean.toggle
+            entity_id: input_boolean.auto_vent_max 
           - service: switch.toggle
             entity_id: switch.fan_bathroom_1_l2
           - service: timer.cancel

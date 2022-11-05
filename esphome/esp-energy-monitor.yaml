@@ -116,7 +116,7 @@ sensor:
       device_class: energy
       state_class: total_increasing
       filters:
-        - offset: 1 #776447
+        - offset: 834597 #983149 #776447
         - multiply: 0.001
       id: id_energy
     power:

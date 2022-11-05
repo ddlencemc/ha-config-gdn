@@ -13,7 +13,7 @@ bathroom_2_ventilation:
       hum_high_on_2:
         name: Влажность для включения вытяжки
         min: 60
-        max: 90
+        max: 95
         step: 1
         
       hum_low_off_2:
@@ -37,6 +37,9 @@ bathroom_2_ventilation:
           - 00:08:00
           - 00:09:00
           - 00:10:00
+          - 00:15:00
+          - 00:20:00
+          - 00:30:00
 
       vent_min_off_time_2:
         name: Время для выключения минимальной вытяжки
@@ -300,7 +303,7 @@ bathroom_2_ventilation:
           - choose:
               - conditions:
                   - condition: state
-                    entity_id: binary_sensor.sensor_light_batroom_1_on
+                    entity_id: binary_sensor.sensor_light_batroom_2_on
                     state: 'on'
                 sequence:
                   - service: switch.turn_off
@@ -317,5 +320,29 @@ bathroom_2_ventilation:
                   - service: automation.trigger
                     data:
                       entity_id: automation.auto_bathroom2_set_humidity_min
-          
-            
+
+      - id: Отключение света в маленькой ванной
+        alias: turn_off_light_bs
+        initial_state: true
+        trigger:
+        - platform: state
+          entity_id: binary_sensor.kate_amazfit_gts_3
+          to: "off"
+          from: "on"
+          for: '00:05:00'
+        condition:
+        - condition: time
+          after: '06:00'
+          before: '09:30'
+          weekday:
+          - mon
+          - tue
+          - wed
+          - thu
+          - fri
+        action:
+        - service: switch.turn_off
+          data:
+            entity_id: 
+              - switch.switch_bathroom_2_right
+              - switch.switch_bathroom_2_left

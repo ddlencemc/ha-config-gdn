@@ -1,0 +1,13 @@
+- alias: covers_close_when_sunset
+  id: Закрытие жалюзи на закате
+  description: 'Закрытие жалюзи на закате'
+  initial_state: true
+  trigger:
+  - platform: sun
+    event: sunset
+    offset: +00:15:00
+  action:
+  - service: cover.close_cover
+    entity_id: 
+    - cover.rollet_bedroom
+    - cover.rollet_kateroom

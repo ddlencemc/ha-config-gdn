@@ -1,15 +1,61 @@
 db_url: mysql://hass:hass@core-mariadb/homeassistant?charset=utf8
-#purge_keep_days: 5
-#include:
-#    domains:
-#      - switch
-#      - light
-#      - systemmonitor
-#    entities:
+purge_keep_days: 365
+include:
+    domains:
+      - switch
+      - light
+      - systemmonitor
+      - cover
+    entities:
 ##Объем БД
-#      - sensor.maria_db_size
+      - sensor.maria_db_size
 ##Сенсоры температуры и влажности
-#      - sensor.outside_temperature
+      - sensor.espws_inside_temperature
+      - sensor.espws_pressure
+      - sensor.espws_outside_dev_point
+      - sensor.espws_outside_temperature
+      - sensor.espws_outside_humidity
+      - sensor.lywsd02_temperature
+      - sensor.lywsd02_humidity
+      - sensor.terrarium_temp_humidity_temperature
+      - sensor.terrarium_temp_humidity_humidity
+      - sensor.bathroom1_temp_humidity_temperature
+      - sensor.bathroom1_temp_humidity_humidity
+      - sensor.bathroom2_temp_humidity_temperature
+      - sensor.bathroom2_temp_humidity_humidity
+      - sensor.cpu_temperature
 #Сенсоры мощности
+      - sensor.esp_energy_monitor_current
+      - sensor.esp_energy_monitor_energy
+      - sensor.esp_energy_monitor_frequency
+      - sensor.esp_energy_monitor_power
+      - sensor.esp_energy_monitor_power_kw
+      - sensor.esp_energy_monitor_power_day
+      - sensor.esp_energy_monitor_power_night
+      - sensor.esp_energy_monitor_power_factor
+      - sensor.esp_energy_monitor_energy_daily_day
+      - sensor.esp_energy_monitor_energy_daily_night
+      - sensor.esp_energy_monitor_energy_daily
+      - sensor.esp_energy_monitor_energy_monthly
+      - sensor.esp_energy_monitor_voltage
+      - sensor.esp_energy_monitor_uptime
+      - sensor.esp_energy_monitor_energy_monthly_day
+      - sensor.esp_energy_monitor_energy_monthly_night
+      - sensor.smart_plug_01_energy
+      - sensor.smart_plug_01_power
+      - sensor.smart_plug_01_current
+      - sensor.smart_plug_01_voltage
+
+      - binary_sensor.corridor_occupancy
+      
+      - binary_sensor.kate_amazfit_gts_3
+      - binary_sensor.mi_band_2
+      - binary_sensor.valeriya_mi_band_5
+      - sensor.valeriya_mi_band_5
+      - sensor.mi_band_2
+      - sensor.kate_amazfit_gts_3
+
+# Сенсоры системы
+      
 
 #exclude:

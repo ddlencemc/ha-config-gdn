@@ -189,6 +189,11 @@ switch.switch_kateroom_ligth_top_right:
   device_class: light
   icon: mdi:track-light
 
+switch.switch_kate_nightlight:
+  friendly_name: Катина комната ночник
+  device_class: light
+  icon: mdi:track-light
+
 switch.switch_living_room_ligth_chandelier_left:
   friendly_name: Люстра над кухонной зоной
   device_class: light
